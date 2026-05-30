@@ -1,0 +1,32 @@
+{
+	"name": "blog-app",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
+	},
+	"dependencies": {
+		"@pinia/nuxt": "^0.11.3",
+		"@prisma/adapter-pg": "^7.8.0",
+		"@prisma/client": "^7.8.0",
+		"@vueuse/core": "^14.3.0",
+		"@vueuse/nuxt": "^14.3.0",
+		"bcrypt": "^6.0.0",
+		"nuxt": "^4.4.2",
+		"pg": "^8.20.0",
+		"pinia-plugin-persistedstate": "^4.7.1",
+		"sass": "^1.99.0",
+		"vue": "^3.5.33",
+		"vue-router": "^5.0.6",
+		"zod": "^4.4.3"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^6.0.0",
+		"dotenv": "^17.4.2",
+		"prisma": "^7.8.0"
+	}
+}

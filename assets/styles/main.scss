@@ -1,0 +1,10 @@
+﻿// global
+
+@use './global/fonts.scss';
+@use './global/container.scss';
+@use './global/normalize.scss';
+@use './global/reboot.scss';
+
+// blocks
+@use './blocks/btn.scss';
+@use './blocks/loader.scss';

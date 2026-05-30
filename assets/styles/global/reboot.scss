@@ -1,0 +1,86 @@
+@use './variables.scss' as *;
+
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+	// outline: 4px solid black;
+}
+
+html {
+	scroll-behavior: smooth;
+	// overflow-x: hidden;
+}
+
+body {
+	background-color: $green-deep;
+	font-weight: 500;
+	display: flex;
+	flex-direction: column;
+	font-family: $custom-font;
+	min-height: 100vh;
+	max-width: 100vw;
+	height: 100%;
+	padding: 0;
+	margin: unset;
+	flex-grow: 1;
+	color: $purple-deep;
+}
+
+picture {
+	display: block;
+	height: auto;
+	max-width: 100%;
+}
+
+img {
+	display: block;
+	height: auto;
+	max-width: 100%;
+	object-fit: cover;
+}
+
+a {
+	color: $white;
+	text-decoration: none;
+	// font-family: $custom-font;
+	cursor: pointer;
+}
+
+svg {
+	flex-shrink: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	margin: 0;
+}
+
+ul,
+ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+button {
+	cursor: pointer;
+}
+
+footer {
+	margin-top: auto;
+}
+
+section {
+	margin-top: 1.12rem;
+	margin-bottom: 1.12rem;
+}
+
+textarea {
+	resize: none;
+}

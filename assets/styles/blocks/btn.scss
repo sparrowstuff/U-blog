@@ -1,0 +1,129 @@
+@import '@/assets/styles/global/variables.scss';
+
+@property --hue {
+	syntax: '<angle>';
+	inherits: false;
+	initial-value: 0deg;
+}
+
+@keyframes hue-spin {
+	to {
+		--hue: 360deg;
+	}
+}
+
+.btn {
+	border: 2px solid transparent;
+	border-radius: 0.5rem;
+	background: linear-gradient(
+		135deg,
+		oklch(65% 0.2 var(--hue)),
+		oklch(65% 0.2 calc(var(--hue) + 120deg))
+	);
+	animation: hue-spin 2s ease-in infinite;
+	color: $light-white;
+	padding: 0.2rem 0.5rem;
+
+	transition:
+		filter $transition-300,
+		border-color $transition-300;
+
+	&:hover,
+	&:focus-visible {
+		animation-play-state: paused;
+		border: 2px solid $black;
+	}
+
+	&--transparent {
+		position: relative;
+		background: transparent;
+		color: $white;
+		border: 2px solid $white;
+		animation: none;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: inherit;
+			background: linear-gradient(
+				135deg,
+				oklch(65% 0.2 var(--hue)),
+				oklch(65% 0.2 calc(var(--hue) + 120deg))
+			);
+			opacity: 0;
+			transition: opacity $transition-300;
+			z-index: -1;
+		}
+
+		&:hover,
+		&:focus-visible {
+			border-color: $white;
+			color: $white;
+
+			&::before {
+				opacity: 1;
+			}
+		}
+	}
+
+	&--modal,
+	&--pagination {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 0.4rem;
+		border: 2px solid $black;
+		background: transparent;
+		color: $white;
+		animation: none;
+
+		// псевдоэлемент с градиентом
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: inherit;
+			background: linear-gradient(
+				135deg,
+				oklch(65% 0.2 var(--hue)),
+				oklch(65% 0.2 calc(var(--hue) + 120deg))
+			);
+			opacity: 0;
+			transition: opacity $transition-300;
+			z-index: -1;
+		}
+
+		&:hover,
+		&:focus-visible {
+			color: $white;
+
+			&::before {
+				opacity: 1;
+			}
+		}
+	}
+
+	&--up {
+		border-radius: 50%;
+		width: 2rem;
+		height: 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&--pagination {
+		border-radius: 50%;
+		width: 2rem;
+		height: 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.2rem 0.2rem;
+		background: transparent;
+		border: none;
+	}
+}
