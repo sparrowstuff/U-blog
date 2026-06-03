@@ -81,6 +81,28 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 		customError.value = null
 	}
 
+	const deleteComment = async (postId: number, commentId: number) => {
+		isLoading.value = true
+		customError.value = null
+
+		try {
+			await $fetch(`/api/posts/${postId}/comments`, {
+				method: 'DELETE',
+				body: { commentId },
+			})
+
+			commentsByPostId.value[postId] = (
+				commentsByPostId.value[postId] ?? []
+			).filter(comment => comment.id !== commentId)
+		} catch (err: any) {
+			customError.value =
+				err?.data?.statusMessage || 'Ошибка удаления комментария'
+			throw err
+		} finally {
+			isLoading.value = false
+		}
+	}
+
 	return {
 		isLoading,
 		customError,
@@ -88,5 +110,6 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 		getCommentsByPostId,
 		addComment,
 		clearComments,
+		deleteComment,
 	}
 })

@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+type ReactionType = 'like' | 'dislike' | null
+
 type PublicPost = {
 	id: number
 	title: string
@@ -8,12 +10,22 @@ type PublicPost = {
 	userId: number
 	createdAt: string
 	updatedAt: string
+	likesCount?: number
+	dislikesCount?: number
+	userReaction: ReactionType
 	user: {
 		id: number
 		name: string
 		surName: string
 		email: string
 	}
+}
+
+type ReactionResponse = {
+	success: Boolean
+	likesCount: number
+	dislikesCount: number
+	userReaction: ReactionType
 }
 
 export const usePostsStore = defineStore('posts', () => {
@@ -32,6 +44,17 @@ export const usePostsStore = defineStore('posts', () => {
 
 	const clearCurrentPost = () => {
 		currentPost.value = null
+	}
+
+	const applyReactionToPost = (
+		post: PublicPost,
+		likesCount: number,
+		dislikesCount: number,
+		userReaction: ReactionType,
+	) => {
+		post.likesCount = likesCount
+		post.dislikesCount = dislikesCount
+		post.userReaction = userReaction
 	}
 
 	const fetchPosts = async () => {
@@ -131,6 +154,55 @@ export const usePostsStore = defineStore('posts', () => {
 		}
 	}
 
+	const updatePostReaction = (
+		postId: number,
+		likesCount: number,
+		dislikesCount: number,
+		userReaction: 'like' | 'dislike' | null,
+	) => {
+		const applyUpdate = (post: PublicPost) => {
+			post.likesCount = likesCount
+			post.dislikesCount = dislikesCount
+			post.userReaction = userReaction
+		}
+
+		const post = posts.value.find(item => item.id === postId)
+		if (post) applyUpdate(post)
+
+		if (currentPost.value?.id === postId) {
+			applyUpdate(currentPost.value)
+		}
+	}
+
+	const toggleReaction = async (postId: number, type: 'like' | 'dislike') => {
+		isLoading.value = true
+		customError.value = null
+
+		try {
+			const res = await $fetch<ReactionResponse>(
+				`/api/posts/${postId}/reaction`,
+				{
+					method: 'POST',
+					body: { type },
+				},
+			)
+
+			updatePostReaction(
+				postId,
+				res.likesCount,
+				res.dislikesCount,
+				res.userReaction,
+			)
+
+			return res
+		} catch (err: any) {
+			customError.value = err?.data?.statusMessage || 'Ошибка установки реакции'
+			throw err
+		} finally {
+			isLoading.value = false
+		}
+	}
+
 	return {
 		posts,
 		currentPost,
@@ -144,5 +216,6 @@ export const usePostsStore = defineStore('posts', () => {
 		addPost,
 		fetchUserPosts,
 		deletePost,
+		toggleReaction,
 	}
 })

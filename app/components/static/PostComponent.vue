@@ -1,6 +1,6 @@
 <template>
 	<article class="post-card">
-		<div class="post-card__wrapper" v-if="post && post.user">
+		<div class="post-card__wrapper" v-if="post">
 			<div class="post-card__heading">
 				<div class="post-card__inner-heading">
 					<h3 class="post-card__user-name">{{ post.user.name }}</h3>
@@ -79,15 +79,23 @@
 					</span>
 				</div>
 
-				<button
-					v-if="userStore.user?.id === post.user.id"
-					class="post-card__delete-btn btn"
-					aria-label="Удалить пост"
-					type="button"
-					@click="deleteCurrentPost"
-				>
-					Удалить пост?
-				</button>
+				<div class="post-card__bottom-menu">
+					<button
+						v-if="userStore.user?.id === post?.user?.id"
+						class="post-card__delete-btn btn"
+						aria-label="Удалить пост"
+						type="button"
+						@click="deleteCurrentPost"
+					>
+						Удалить пост?
+					</button>
+					<LikesMenu
+						:post-id="post.id"
+						:likes-count="post.likesCount"
+						:dislikes-count="post.dislikesCount"
+						:user-reaction="post.userReaction"
+					/>
+				</div>
 			</div>
 		</div>
 	</article>
@@ -98,6 +106,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import CommentForm from './CommentForm.vue'
 import CommentComponent from './CommentComponent.vue'
+import LikesMenu from './LikesMenu.vue'
 import { useCommentsStore } from '~/stores/commentsStore.js'
 import { usePostsStore } from '~/stores/postsStore.js'
 import { useUserStore } from '~/stores/userStore.js'
@@ -108,11 +117,16 @@ const commentsStore = useCommentsStore()
 const postsStore = usePostsStore()
 const userStore = useUserStore()
 
+type ReactionType = 'like' | 'dislike' | null
+
 type PostCard = {
 	id: number
 	title: string
 	description: string
 	createdAt: string
+	likesCount?: number
+	dislikesCount?: number
+	userReaction?: ReactionType
 	user: {
 		id: number
 		name: string
@@ -304,9 +318,14 @@ onMounted(async () => {
 		gap: 0.62rem;
 	}
 
+	&__bottom-menu {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
 	&__delete-btn {
 		width: fit-content;
-		margin-left: auto;
 	}
 }
 </style>

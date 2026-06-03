@@ -43,6 +43,11 @@ export const useUserStore = defineStore('user', () => {
 		clearUser()
 	}
 
+	// const deleteUser = async (userId: number) => {
+	// 	await $fetch(`/api/users/${userId}`, { method: 'DELETE' })
+	// 	clearUser()
+	// }
+
 	return {
 		user,
 		isAuthenticated,
@@ -50,6 +55,7 @@ export const useUserStore = defineStore('user', () => {
 		clearUser,
 		fetchUser,
 		logout,
+		// deleteUser,
 		isReady,
 	}
 })

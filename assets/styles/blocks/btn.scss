@@ -126,4 +126,21 @@
 		background: transparent;
 		border: none;
 	}
+
+	&--like {
+		border: unset;
+		background: transparent;
+		animation: none;
+		padding: unset;
+
+		transition: scale $transition-300;
+
+		&:hover,
+		&:focus-visible {
+			scale: 1.2;
+
+			border: unset;
+			background: unset;
+		}
+	}
 }
