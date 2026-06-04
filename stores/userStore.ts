@@ -1,16 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { IUser } from '@/types/userType'
-
-type PublicUser = {
-	id: number
-	name: string
-	surName: string
-	email: string
-	createdAt: string
-	isAdmin: boolean
-	avatarUrl?: string
-}
+import type { PublicUser } from '@/types/PublicUser'
 
 export const useUserStore = defineStore('user', () => {
 	const user = ref<PublicUser | null>(null)
@@ -31,7 +21,6 @@ export const useUserStore = defineStore('user', () => {
 		try {
 			const res = await $fetch<PublicUser | null>('/api/auth/me')
 			user.value = res
-			// console.log(user.value)
 		} finally {
 			isReady.value = false
 		}
@@ -55,7 +44,6 @@ export const useUserStore = defineStore('user', () => {
 		clearUser,
 		fetchUser,
 		logout,
-		// deleteUser,
 		isReady,
 	}
 })

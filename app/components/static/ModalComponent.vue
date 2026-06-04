@@ -404,8 +404,6 @@ const submitForm = async () => {
 			body,
 		})
 
-		console.log(res)
-
 		userStore.setUser(res as any)
 		modalStore.closeModal()
 	} catch (error: any) {

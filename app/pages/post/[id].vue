@@ -38,6 +38,8 @@ onMounted(async () => {
 	try {
 		const id = Number(route.params.id)
 
+		if (Number.isNaN(id) || id <= 0) return
+
 		if (!id) {
 			return
 		} else {

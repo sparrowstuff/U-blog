@@ -1,7 +1,8 @@
 import prisma from '~/server/utils/database'
 import { getCookie } from 'h3'
+import type { ReactionType } from '~/types/Reaction'
 
-type ReactionType = 'like' | 'dislike' | null
+// type ReactionType = 'like' | 'dislike' | null
 
 export default defineEventHandler(async event => {
 	const userIdCookie = getCookie(event, 'userId')

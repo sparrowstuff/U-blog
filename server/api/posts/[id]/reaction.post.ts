@@ -1,7 +1,6 @@
 import prisma from '~/server/utils/database'
 import { getCookie } from 'h3'
-
-type ReactionType = 'like' | 'dislike'
+import { ReactionType } from '@/types/Reaction'
 
 export default defineEventHandler(async event => {
 	const postId = Number(getRouterParam(event, 'id'))

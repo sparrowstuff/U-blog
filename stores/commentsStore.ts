@@ -1,23 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-type CommentUser = {
-	id: number
-	name: string
-	surName: string
-	email: string
-	avatarUrl: string | null
-}
-
-type CommentItem = {
-	id: number
-	content: string
-	createdAt: string
-	updatedAt: string
-	postId: number
-	userId: number
-	user: CommentUser
-}
+// import type { CommentUser } from '@/types/CommentUser'
+import type { CommentItem } from '@/types/CommentItem'
 
 export const useCommentsStore = defineStore('commentsStore', () => {
 	const commentsByPostId = ref<Record<number, CommentItem[]>>({})

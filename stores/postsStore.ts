@@ -1,32 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-type ReactionType = 'like' | 'dislike' | null
-
-type PublicPost = {
-	id: number
-	title: string
-	description: string
-	userId: number
-	createdAt: string
-	updatedAt: string
-	likesCount?: number
-	dislikesCount?: number
-	userReaction: ReactionType
-	user: {
-		id: number
-		name: string
-		surName: string
-		email: string
-	}
-}
-
-type ReactionResponse = {
-	success: Boolean
-	likesCount: number
-	dislikesCount: number
-	userReaction: ReactionType
-}
+import type { PublicPost } from '@/types/PublicPost'
+import type { ReactionType } from '@/types/Reaction'
+import type { ReactionResponse } from '@/types/Reaction'
 
 export const usePostsStore = defineStore('posts', () => {
 	const posts = ref<PublicPost[]>([])
@@ -46,16 +22,16 @@ export const usePostsStore = defineStore('posts', () => {
 		currentPost.value = null
 	}
 
-	const applyReactionToPost = (
-		post: PublicPost,
-		likesCount: number,
-		dislikesCount: number,
-		userReaction: ReactionType,
-	) => {
-		post.likesCount = likesCount
-		post.dislikesCount = dislikesCount
-		post.userReaction = userReaction
-	}
+	// const applyReactionToPost = (
+	// 	post: PublicPost,
+	// 	likesCount: number,
+	// 	dislikesCount: number,
+	// 	userReaction: ReactionType,
+	// ) => {
+	// 	post.likesCount = likesCount
+	// 	post.dislikesCount = dislikesCount
+	// 	post.userReaction = userReaction
+	// }
 
 	const fetchPosts = async () => {
 		isLoading.value = true
@@ -95,16 +71,12 @@ export const usePostsStore = defineStore('posts', () => {
 		customError.value = null
 
 		try {
-			const res = await $fetch<PublicPost>('/api/posts', {
+			await $fetch<PublicPost>('/api/posts', {
 				method: 'POST',
 				body: payload,
 			})
 
-			posts.value.unshift(res)
-
 			await fetchPosts()
-
-			return res
 		} catch (e: any) {
 			customError.value = e?.data?.statusMessage || 'Ошибка создания поста'
 			throw e

@@ -34,8 +34,39 @@ export default defineEventHandler(async event => {
 					email: true,
 				},
 			},
+			_count: {
+				select: {
+					likes: true,
+					dislikes: true,
+				},
+			},
+			likes: {
+				select: {
+					userId: true,
+				},
+			},
+			dislikes: {
+				select: {
+					userId: true,
+				},
+			},
 		},
 	})
 
-	return posts
+	return posts.map(post => {
+		const liked = post.likes.length > 0
+		const disliked = post.dislikes.length > 0
+
+		return {
+			id: post.id,
+			title: post.title,
+			description: post.description,
+			createdAt: post.createdAt,
+			updatedAt: post.updatedAt,
+			user: post.user,
+			likesCount: post._count.likes,
+			dislikesCount: post._count.dislikes,
+			userReaction: liked ? 'like' : disliked ? 'dislike' : null,
+		}
+	})
 })

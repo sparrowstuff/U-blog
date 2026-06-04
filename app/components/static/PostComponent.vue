@@ -3,9 +3,9 @@
 		<div class="post-card__wrapper" v-if="post">
 			<div class="post-card__heading">
 				<div class="post-card__inner-heading">
-					<h3 class="post-card__user-name">{{ post.user.name }}</h3>
+					<h3 class="post-card__user-name">{{ post.user?.name }}</h3>
 					<span class="post-card__divide">|</span>
-					<p class="post-card__user-email">{{ post.user.email }}</p>
+					<p class="post-card__user-email">{{ post.user?.email }}</p>
 				</div>
 				<span class="post-card__created-at">{{ post.createdAt }}</span>
 			</div>
