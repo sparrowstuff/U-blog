@@ -7,7 +7,7 @@
 					<span class="post-card__divide">|</span>
 					<p class="post-card__user-email">{{ post.user?.email }}</p>
 				</div>
-				<span class="post-card__created-at">{{ post.createdAt }}</span>
+				<span class="post-card__created-at">{{ dateFormatted }}</span>
 			</div>
 
 			<div
@@ -150,6 +150,21 @@ const isShowingComments = ref(false)
 const postComments = computed(() =>
 	commentsStore.getCommentsByPostId(props.post.id),
 )
+
+const dateFormatted = computed(() => {
+	const date = new Date(props.post.createdAt)
+
+	const formatter = new Intl.DateTimeFormat('ru-ru', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+	})
+
+	const dateHours = date.getHours()
+	const dateMinutes = date.getMinutes()
+
+	return `${formatter.format(date)} | ${dateHours}:${dateMinutes}`
+})
 
 const openCommentForm = () => {
 	isCommenting.value = true

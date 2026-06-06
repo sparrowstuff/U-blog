@@ -61,6 +61,7 @@
 				<div class="header__mobile" v-else>
 					<article
 						class="burger-menu"
+						ref="burger-menu"
 						:class="{ 'burger-menu--isActive': isBurgerOpened }"
 					>
 						<button
@@ -123,6 +124,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useModalStore } from '@/stores/modalStore'
 import ModalComponent from './ModalComponent.vue'
 import { useUserStore } from '~/stores/userStore'
+import { onClickOutside, type MaybeElementRef } from '@vueuse/core'
 
 const modal = useModalStore()
 const userStore = useUserStore()
@@ -146,7 +148,15 @@ const openModal = () => {
 	modal.openModal()
 }
 
+const target = useTemplateRef('burger-menu')
+
 onMounted(() => {
+	onClickOutside(target as MaybeElementRef, () => {
+		if (isBurgerOpened.value === true) {
+			isBurgerOpened.value = false
+		}
+	})
+
 	mobileChangeUi()
 	window.addEventListener('resize', mobileChangeUi)
 })
@@ -211,15 +221,16 @@ onUnmounted(() => {
 	}
 
 	&__mobile-menu {
-		border: 1px solid $black;
+		border: 1px solid $white;
 		border-radius: 0.5rem;
-		background-color: white;
+		background-color: $green-deep;
 		padding: 1.12rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		gap: 0.8rem;
+		z-index: 5;
 
 		transition:
 			opacity $transition-300,

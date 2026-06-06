@@ -63,11 +63,21 @@
 					</div>
 				</div>
 				<AddPostForm />
+				<button
+					class="profile__delete-profile-btn btn btn--transparent"
+					type="button"
+					aria-label="Удалить аккаунт"
+					@click="deleteAccount"
+				>
+					Удалить аккаунт?
+				</button>
 			</div>
 		</div>
 	</section>
 
 	<LoaderImg v-else />
+
+	<UpBtn />
 </template>
 
 <script setup lang="ts">
@@ -77,6 +87,7 @@ import { usePostsStore } from '~/stores/postsStore'
 import AddPostForm from '~/app/components/static/AddPostForm.vue'
 import PostComponent from '~/app/components/static/PostComponent.vue'
 import LoaderImg from '~/app/components/static/LoaderImg.vue'
+import UpBtn from '~/app/components/static/UpBtn.vue'
 
 const userStore = useUserStore()
 const postsStore = usePostsStore()
@@ -101,6 +112,21 @@ const logout = async () => {
 	await userStore.logout()
 
 	navigateTo('/')
+}
+
+const deleteAccount = async () => {
+	const userId = userStore.user?.id
+	if (!userId) return
+
+	const ok = confirm(
+		'Удалить аккаунт? При выполнении данного действия будут удалены все ваши посты, реакции и комментарии на посты других людей',
+	)
+
+	if (!ok) return
+
+	await userStore.deleteUser(userId)
+	postsStore.clearPostsState()
+	await navigateTo('/')
 }
 
 onMounted(async () => {

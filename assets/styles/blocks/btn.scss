@@ -26,7 +26,8 @@
 
 	transition:
 		filter $transition-300,
-		border-color $transition-300;
+		border-color $transition-300,
+		color $transition-300;
 
 	&:hover,
 	&:focus-visible {
@@ -113,6 +114,15 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+		transition: scale $transition-300;
+
+		&:hover,
+		&:focus-visible {
+			border: unset;
+
+			scale: 1.2;
+		}
 	}
 
 	&--pagination {

@@ -22,17 +22,6 @@ export const usePostsStore = defineStore('posts', () => {
 		currentPost.value = null
 	}
 
-	// const applyReactionToPost = (
-	// 	post: PublicPost,
-	// 	likesCount: number,
-	// 	dislikesCount: number,
-	// 	userReaction: ReactionType,
-	// ) => {
-	// 	post.likesCount = likesCount
-	// 	post.dislikesCount = dislikesCount
-	// 	post.userReaction = userReaction
-	// }
-
 	const fetchPosts = async () => {
 		isLoading.value = true
 		customError.value = null
@@ -175,6 +164,13 @@ export const usePostsStore = defineStore('posts', () => {
 		}
 	}
 
+	const clearPostsState = () => {
+		posts.value = []
+		currentPost.value = null
+		isLoading.value = false
+		customError.value = null
+	}
+
 	return {
 		posts,
 		currentPost,
@@ -189,5 +185,6 @@ export const usePostsStore = defineStore('posts', () => {
 		fetchUserPosts,
 		deletePost,
 		toggleReaction,
+		clearPostsState,
 	}
 })
