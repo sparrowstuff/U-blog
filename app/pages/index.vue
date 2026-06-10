@@ -10,12 +10,14 @@
 				/>
 
 				<div class="hero__content" v-if="!loading">
-					<PostComponent
-						v-for="post in paginatedPosts"
-						:key="post.id"
-						:post="post"
-						:show-comments-immediately="false"
-					/>
+					<TransitionGroup class="hero__posts" name="post-list" tag="article">
+						<PostComponent
+							v-for="post in paginatedPosts"
+							:key="post.id"
+							:post="post"
+							:show-comments-immediately="false"
+						/>
+					</TransitionGroup>
 					<AddPostForm />
 				</div>
 				<LoaderImg v-else />
@@ -99,6 +101,33 @@ onMounted(async () => {
 		flex-direction: column;
 		gap: 1rem;
 		justify-content: center;
+		width: 100%;
+	}
+
+	&__posts {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+
+		@media (max-width: 48rem) {
+			gap: 0.5rem;
+		}
+	}
+
+	.post-list-enter-active,
+	.post-list-leave-active,
+	.post-list-move {
+		transition: all 0.35s ease;
+	}
+
+	.post-list-enter-from,
+	.post-list-leave-to {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+
+	.post-list-leave-active {
+		position: absolute;
 		width: 100%;
 	}
 }

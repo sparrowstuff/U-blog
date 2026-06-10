@@ -199,6 +199,10 @@ onMounted(async () => {
 	border: 1px solid $white;
 	border-radius: 0.5rem;
 	min-height: 10rem;
+	background: rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(20px) saturate(180%);
+	-webkit-backdrop-filter: blur(20px) saturate(180%);
+	box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
 
 	&__wrapper {
 		width: 100%;
