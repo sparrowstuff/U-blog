@@ -82,7 +82,7 @@
 				<div class="post-card__bottom-menu">
 					<button
 						v-if="userStore.user?.id === post?.user?.id"
-						class="post-card__delete-btn btn"
+						class="post-card__delete-btn btn btn--transparent"
 						aria-label="Удалить пост"
 						type="button"
 						@click="deleteCurrentPost"
@@ -160,8 +160,8 @@ const dateFormatted = computed(() => {
 		year: 'numeric',
 	})
 
-	const dateHours = date.getHours()
-	const dateMinutes = date.getMinutes()
+	const dateHours = String(date.getHours()).padStart(2, '0')
+	const dateMinutes = String(date.getMinutes()).padStart(2, '0')
 
 	return `${formatter.format(date)} | ${dateHours}:${dateMinutes}`
 })
@@ -206,8 +206,8 @@ onMounted(async () => {
 		flex-direction: column;
 		gap: 0.8rem;
 
-		@media (max-width: 31.25rem) {
-			gap: 1rem;
+		@media (max-width: 48rem) {
+			gap: 0.4rem;
 		}
 	}
 
@@ -238,10 +238,18 @@ onMounted(async () => {
 
 	&__user-name {
 		font-size: $px-24;
+
+		@media (max-width: 48rem) {
+			font-size: $px-20;
+		}
 	}
 
 	&__user-email {
 		font-size: $px-20;
+
+		@media (max-width: 48rem) {
+			font-size: $px-14;
+		}
 	}
 
 	&__main {
@@ -288,6 +296,14 @@ onMounted(async () => {
 
 	&__post-title {
 		font-size: $px-24;
+
+		@media (max-width: 48rem) {
+			font-size: $px-20;
+		}
+	}
+
+	&__post-description {
+		font-size: $px-14;
 	}
 
 	&__commentary-block {
@@ -298,7 +314,6 @@ onMounted(async () => {
 
 	&__helper {
 		opacity: 0;
-		// clip-path: polygon(100% 0%, 100% 0%, 0% 0%, 0% 0%);
 		display: block;
 		transform: translateY(0.25rem);
 		pointer-events: none;
@@ -307,15 +322,23 @@ onMounted(async () => {
 			opacity $transition-300,
 			clip-path $transition-300,
 			transform $transition-300;
+
+		@media (max-width: 48rem) {
+			font-size: $px-14;
+		}
 	}
 
 	&__helper--show {
 		opacity: 1;
-		// clip-path: polygon(100% 0%, 100% 100%, 0% 100%, 0% 0%);
 	}
 
 	&__add-comment-btn {
 		width: fit-content;
+
+		@media (max-width: 48rem) {
+			padding: 0.1rem 0.2rem;
+			font-size: $px-14;
+		}
 	}
 
 	&__comments {
@@ -335,12 +358,23 @@ onMounted(async () => {
 
 	&__bottom-menu {
 		display: flex;
+		flex-direction: row-reverse;
 		align-items: center;
 		gap: 0.4rem;
+
+		@media (max-width: 48rem) {
+			justify-content: space-between;
+			gap: 0.1rem;
+		}
 	}
 
 	&__delete-btn {
 		width: fit-content;
+
+		@media (max-width: 48rem) {
+			padding: 0.1rem 0.2rem;
+			font-size: $px-14;
+		}
 	}
 }
 </style>

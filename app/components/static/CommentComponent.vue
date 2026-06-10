@@ -14,7 +14,7 @@
 							{{ comment.user.name }} {{ comment.user.surName }}
 						</h4>
 					</div>
-					<p class="comment__created-at">{{ comment.createdAt }}</p>
+					<p class="comment__created-at">{{ dateFormatted }}</p>
 				</div>
 				<p class="comment__comment">{{ comment.content }}</p>
 			</div>
@@ -61,6 +61,21 @@ const isDeleting = ref(false)
 
 const canDelete = computed(() => userStore.user?.id === props.comment.userId)
 
+const dateFormatted = computed(() => {
+	const date = new Date(props.comment.createdAt)
+
+	const formatter = new Intl.DateTimeFormat('ru-ru', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+	})
+
+	const dateHours = String(date.getHours()).padStart(2, '0')
+	const dateMinutes = String(date.getMinutes()).padStart(2, '0')
+
+	return `${formatter.format(date)} | ${dateHours}:${dateMinutes}`
+})
+
 const deleteThisComment = async () => {
 	if (!canDelete.value || isDeleting.value) return
 
@@ -94,6 +109,11 @@ const deleteThisComment = async () => {
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.62rem;
+
+		@media (max-width: 48rem) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
 	}
 
 	&__main {
@@ -107,15 +127,27 @@ const deleteThisComment = async () => {
 		display: flex;
 		align-items: baseline;
 		gap: 0.62rem;
+
+		@media (max-width: 48rem) {
+			justify-content: space-between;
+		}
 	}
 
 	&__author-name {
 		font-size: $px-22;
 		font-weight: 600;
+
+		@media (max-width: 48rem) {
+			font-size: $px-18;
+		}
 	}
 
 	&__comment {
 		font-size: $px-18;
+
+		@media (max-width: 48rem) {
+			font-size: $px-14;
+		}
 	}
 }
 </style>

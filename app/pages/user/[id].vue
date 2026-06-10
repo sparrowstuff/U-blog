@@ -9,9 +9,6 @@
 							<h2 class="profile__email">
 								Поч. адрес: <b>{{ userStore.user?.email }}</b>
 							</h2>
-							<h3 class="profile__title">
-								Аккаунт номер <b>{{ userStore.user?.id }}</b>
-							</h3>
 						</div>
 						<div class="profile__info">
 							<p class="profile__name">
@@ -22,7 +19,7 @@
 							>
 						</div>
 						<span class="profile__created-at"
-							>Создан: <b>{{ userStore.user?.createdAt }}</b></span
+							>Создан: <b>{{ dateFormatted }}</b></span
 						>
 						<svg
 							class="profile__picture"
@@ -109,9 +106,7 @@ definePageMeta({
 const logout = async () => {
 	const ok = confirm('Действительно выйти из аккаунта?')
 	if (!ok) return
-	await userStore.logout()
-
-	navigateTo('/')
+	await userStore.logout().then(navigateTo('/'))
 }
 
 const deleteAccount = async () => {
@@ -128,6 +123,22 @@ const deleteAccount = async () => {
 	postsStore.clearPostsState()
 	await navigateTo('/')
 }
+
+const dateFormatted = computed(() => {
+	const userCreated = userStore.user?.createdAt
+	const date = new Date(String(userCreated))
+
+	const formatter = new Intl.DateTimeFormat('ru-ru', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+	})
+
+	const dateHours = String(date.getHours()).padStart(2, '0')
+	const dateMinutes = String(date.getMinutes()).padStart(2, '0')
+
+	return `${formatter.format(date)} | ${dateHours}:${dateMinutes}`
+})
 
 onMounted(async () => {
 	loading.value = true
@@ -168,6 +179,11 @@ onMounted(async () => {
 		font-size: $px-30;
 		line-height: 110%;
 		letter-spacing: 0.02em;
+		text-align: center;
+
+		@media (max-width: 48rem) {
+			font-size: $px-22;
+		}
 	}
 
 	&__wrapper {

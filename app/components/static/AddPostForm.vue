@@ -45,10 +45,10 @@
 		<button
 			class="add-post-form__clear-btn btn btn--transparent"
 			type="button"
-			aria-label="Очистить форму"
+			aria-label="Очистить написание поста"
 			@click="clearForm"
 		>
-			Очистить форму
+			Очистить
 		</button>
 		<button
 			class="add-post-form__submit-btn btn"
@@ -156,6 +156,12 @@ const submitForm = async () => {
 	margin-top: 1.12rem;
 	margin-bottom: 1.12rem;
 
+	@media (max-width: 48rem) {
+		gap: 0.3rem;
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
 	&__wrapper {
 		width: 100%;
 		display: flex;
@@ -171,6 +177,11 @@ const submitForm = async () => {
 
 	&__submit-btn {
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+
+		@media (max-width: 48rem) {
+			padding: 0.1rem 0.5rem;
+			font-size: $px-14;
+		}
 	}
 }
 

@@ -2,28 +2,24 @@ import prisma from '~/server/utils/database'
 import { deleteCookie, getCookie } from 'h3'
 
 export default defineEventHandler(async event => {
-	const userId = Number(getRouterParam(event, 'id'))
+	const paramId = Number(getRouterParam(event, 'id'))
+	const cookieUserId = Number(getCookie(event, 'userId'))
 
-	if (!userId || Number.isNaN(userId)) {
+	if (!paramId || Number.isNaN(paramId)) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Invalid user id',
 		})
 	}
 
-	console.log('cookie auth:', getCookie(event, 'userId'))
-	console.log('context user:', event.context.user)
-
-	const currentUserId = event.context.user?.id
-
-	if (!currentUserId) {
+	if (!cookieUserId || Number.isNaN(cookieUserId)) {
 		throw createError({
 			statusCode: 401,
 			statusMessage: 'Unauthorized',
 		})
 	}
 
-	if (currentUserId !== userId) {
+	if (cookieUserId !== paramId) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden',
@@ -31,7 +27,7 @@ export default defineEventHandler(async event => {
 	}
 
 	const user = await prisma.user.findUnique({
-		where: { id: userId },
+		where: { id: paramId },
 		select: { id: true },
 	})
 
@@ -43,7 +39,7 @@ export default defineEventHandler(async event => {
 	}
 
 	const postIds = await prisma.post.findMany({
-		where: { userId },
+		where: { userId: paramId },
 		select: { id: true },
 	})
 
@@ -52,62 +48,40 @@ export default defineEventHandler(async event => {
 	await prisma.$transaction(async tx => {
 		if (ids.length > 0) {
 			await tx.comment.deleteMany({
-				where: {
-					postId: {
-						in: ids,
-					},
-				},
+				where: { postId: { in: ids } },
 			})
 
 			await tx.postLike.deleteMany({
-				where: {
-					postId: {
-						in: ids,
-					},
-				},
+				where: { postId: { in: ids } },
 			})
 
 			await tx.postDislike.deleteMany({
-				where: {
-					postId: {
-						in: ids,
-					},
-				},
+				where: { postId: { in: ids } },
 			})
 
 			await tx.post.deleteMany({
-				where: {
-					userId,
-				},
+				where: { userId: paramId },
 			})
 		}
 
 		await tx.comment.deleteMany({
-			where: {
-				userId,
-			},
+			where: { userId: paramId },
 		})
 
 		await tx.postLike.deleteMany({
-			where: {
-				userId,
-			},
+			where: { userId: paramId },
 		})
 
 		await tx.postDislike.deleteMany({
-			where: {
-				userId,
-			},
+			where: { userId: paramId },
 		})
 
 		await tx.user.delete({
-			where: { id: userId },
+			where: { id: paramId },
 		})
 	})
 
-	const authCookieName = 'userId'
-
-	deleteCookie(event, authCookieName, {
+	deleteCookie(event, 'userId', {
 		path: '/',
 	})
 

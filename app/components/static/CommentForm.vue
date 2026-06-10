@@ -102,6 +102,10 @@ const cancelTexting = () => {
 		justify-content: space-between;
 		align-items: center;
 		gap: 0.62rem;
+
+		@media (max-width: 48rem) {
+			flex-direction: column;
+		}
 	}
 
 	&__input-wrapper {
@@ -112,6 +116,21 @@ const cancelTexting = () => {
 		display: flex;
 		align-items: center;
 		gap: 0.62rem;
+
+		@media (max-width: 48rem) {
+			flex-direction: column;
+			align-items: unset;
+			width: 100%;
+		}
+	}
+
+	&__clear-btn,
+	&__cancel-btn,
+	&__submit-btn {
+		@media (max-width: 48rem) {
+			padding: 0.1rem 0.2rem;
+			font-size: $px-12;
+		}
 	}
 }
 

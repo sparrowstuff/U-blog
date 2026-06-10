@@ -48,7 +48,6 @@
 										required
 										autocomplete="email"
 									/>
-									<span class="modal__error-text">{{ errors.email }}</span>
 								</div>
 								<div class="modal-input">
 									<label for="name" class="modal-input__label">
@@ -104,7 +103,6 @@
 										required
 										autocomplete="family-name"
 									/>
-									<span class="modal__error-text">{{ errors.surname }}</span>
 								</div>
 								<div class="modal-input">
 									<label for="password" class="modal-input__label">
@@ -159,9 +157,6 @@
 										required
 										autocomplete="new-password"
 									/>
-									<span class="modal__error-text">{{
-										errors.confirmPassword
-									}}</span>
 								</div>
 							</div>
 							<div class="modal__login-block" v-else>
@@ -191,7 +186,6 @@
 										required
 										autocomplete="email"
 									/>
-									<span class="modal__error-text">{{ errors.email }}</span>
 								</div>
 								<div class="modal-input">
 									<label for="password" class="modal-input__label">
@@ -219,7 +213,6 @@
 										required
 										autocomplete="current-password"
 									/>
-									<span class="modal__error-text">{{ errors.password }}</span>
 								</div>
 							</div>
 							<button
@@ -244,8 +237,11 @@
 											: 'Войти в аккаунт'
 								}}
 							</button>
-							<span class="modal__global-error" v-if="errors.form">{{
-								errors.form
+							<span class="modal__global-error" v-if="errors">{{
+								errors.form ||
+								errors.email ||
+								errors.password ||
+								errors.confirmPassword
 							}}</span>
 						</div>
 						<div class="modal__auth-complete" v-else>
@@ -519,6 +515,11 @@ onMounted(() => {
 		gap: 0.62rem;
 		align-items: center;
 		height: 100%;
+		min-height: 5.25rem;
+	}
+
+	&__logout-btn {
+		margin-top: auto;
 	}
 
 	&__global-error {

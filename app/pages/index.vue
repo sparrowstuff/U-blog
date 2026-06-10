@@ -82,6 +82,10 @@ onMounted(async () => {
 
 	&__title {
 		text-align: center;
+
+		@media (max-width: 48rem) {
+			font-size: $px-22;
+		}
 	}
 
 	&__wrapper {

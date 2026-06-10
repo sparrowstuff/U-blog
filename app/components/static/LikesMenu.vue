@@ -122,6 +122,7 @@ const addDislike = async () => {
 	display: flex;
 	align-items: center;
 	gap: 0.62rem;
+	margin-right: auto;
 
 	$root: &;
 
