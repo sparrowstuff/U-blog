@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { PublicUser } from '@/types/PublicUser'
+import type { UpdateUserPayload } from '@/types/UpdateUserType'
 
 export const useUserStore = defineStore('user', () => {
 	const user = ref<PublicUser | null>(null)
@@ -37,6 +38,19 @@ export const useUserStore = defineStore('user', () => {
 		clearUser()
 	}
 
+	const updateUser = async (userId: number, payload: UpdateUserPayload) => {
+		const updatedUser = await $fetch<PublicUser>(
+			`/api/users/${userId}/update`,
+			{
+				method: 'PATCH',
+				body: payload,
+			},
+		)
+
+		user.value = updatedUser
+		return updatedUser
+	}
+
 	return {
 		user,
 		isAuthenticated,
@@ -46,5 +60,6 @@ export const useUserStore = defineStore('user', () => {
 		logout,
 		isReady,
 		deleteUser,
+		updateUser,
 	}
 })

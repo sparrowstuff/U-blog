@@ -38,6 +38,13 @@
 						</svg>
 					</div>
 					<button
+						class="profile__update-account-btn btn btn--transparent"
+						type="button"
+						@click="updateAccount"
+					>
+						{{ isUpdating ? 'Обновляем...' : 'Редактировать профиль' }}
+					</button>
+					<button
 						class="profile__logout-btn btn"
 						type="button"
 						aria-label="Выйти из аккаунта"
@@ -45,6 +52,11 @@
 					>
 						Выйти из аккаунта
 					</button>
+					<UpdateUserForm
+						v-if="isUpdating"
+						@saved="closeUpdateForm"
+						@cancel="closeUpdateForm"
+					/>
 				</div>
 				<div class="profile__user-posts">
 					<span class="profile__posts-count"
@@ -85,10 +97,12 @@ import AddPostForm from '~/app/components/static/AddPostForm.vue'
 import PostComponent from '~/app/components/static/PostComponent.vue'
 import LoaderImg from '~/app/components/static/LoaderImg.vue'
 import UpBtn from '~/app/components/static/UpBtn.vue'
+import UpdateUserForm from '~/app/components/static/UpdateUserForm.vue'
 
 const userStore = useUserStore()
 const postsStore = usePostsStore()
 
+const isUpdating = ref(false)
 const loading = ref(false)
 
 useHead({
@@ -139,6 +153,14 @@ const dateFormatted = computed(() => {
 
 	return `${formatter.format(date)} | ${dateHours}:${dateMinutes}`
 })
+
+const updateAccount = async () => {
+	isUpdating.value = true
+}
+
+const closeUpdateForm = () => {
+	isUpdating.value = false
+}
 
 onMounted(async () => {
 	loading.value = true
