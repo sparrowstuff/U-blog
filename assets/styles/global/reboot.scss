@@ -84,3 +84,10 @@ section {
 textarea {
 	resize: none;
 }
+
+button,
+a {
+	&:focus-visible {
+		outline: unset;
+	}
+}

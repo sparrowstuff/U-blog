@@ -1,5 +1,8 @@
 <template>
-	<aside class="sidebar" :class="{ 'sidebar--active': isSidebarOpen }">
+	<aside
+		class="sidebar"
+		:class="{ 'sidebar--active': isSidebarOpen, 'sidebar--mobile': !isDesktop }"
+	>
 		<button
 			class="sidebar__open-btn btn btn--sidebar"
 			type="button"
@@ -148,7 +151,7 @@
 				aria-label="Открыть меню регистрации"
 				@click="openModal"
 			>
-				<span class="sidebar__login-btn-text" v-if="isSidebarOpen"
+				<span class="sidebar__login-btn-text" v-if="isSidebarOpen || !isDesktop"
 					>Вход в аккаунт</span
 				>
 				<svg
@@ -171,14 +174,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '~/stores/userStore'
 import { useModalStore } from '~/stores/modalStore'
 
 const userStore = useUserStore()
 const modalStore = useModalStore()
 
-const isSidebarOpen = ref(true)
+const isSidebarOpen = ref(false)
+const isDesktop = ref(true)
 
 const profileTo = computed(() => {
 	return userStore.user ? `/user/${userStore.user?.id}` : '/'
@@ -188,9 +192,22 @@ const openSidebar = () => {
 	isSidebarOpen.value = !isSidebarOpen.value
 }
 
+const mobileChangeUi = () => {
+	isDesktop.value = window.innerWidth > 768
+}
+
 const openModal = () => {
 	modalStore.openModal()
 }
+
+onMounted(() => {
+	mobileChangeUi()
+	window.addEventListener('resize', mobileChangeUi)
+})
+
+onUnmounted(() => {
+	window.removeEventListener('resize', mobileChangeUi)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -236,6 +253,7 @@ const openModal = () => {
 		&:hover,
 		&:focus-visible {
 			transform: translateX(0.3rem);
+			border: unset;
 		}
 	}
 
@@ -253,8 +271,52 @@ const openModal = () => {
 		}
 	}
 
+	&__open-btn {
+		transition:
+			opacity $transition-300,
+			scale $transition-300;
+	}
+
 	&--active {
 		width: 100%;
+
+		#{$root}__link-text {
+			opacity: 1;
+		}
+	}
+
+	&--mobile {
+		grid-column: span 2;
+		min-height: unset;
+		width: 100%;
+
+		#{$root}__open-btn {
+			opacity: 0;
+			pointer-events: none;
+			display: none;
+		}
+
+		#{$root}__wrapper {
+			align-items: center;
+			gap: 1rem;
+			justify-content: space-between;
+			width: 100%;
+		}
+
+		#{$root}__links-menu {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.62rem;
+			width: 100%;
+			flex-wrap: wrap;
+
+			@media (max-width: 25rem) {
+				flex-direction: column;
+				gap: 0.3rem;
+				flex-wrap: nowrap;
+			}
+		}
 
 		#{$root}__link-text {
 			opacity: 1;

@@ -261,7 +261,15 @@ onUnmounted(() => {
 		border: 1px solid $black;
 		border-radius: 0.5rem;
 
+		transition: background-color $transition-300;
+
 		position: relative;
+
+		&:hover,
+		&:focus-visible,
+		&:active {
+			background-color: $white;
+		}
 	}
 
 	&__top-line,
