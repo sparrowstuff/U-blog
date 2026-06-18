@@ -1,3 +1,5 @@
+import type { ReactionType } from './Reaction'
+
 export type PublicPost = {
 	id: number
 	title: string
@@ -13,5 +15,6 @@ export type PublicPost = {
 		name: string
 		surName: string
 		email: string
+		avatarUrl: string
 	}
 }

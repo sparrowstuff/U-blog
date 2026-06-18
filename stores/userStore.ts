@@ -51,6 +51,21 @@ export const useUserStore = defineStore('user', () => {
 		return updatedUser
 	}
 
+	const uploadAvatar = async (userId: number, file: File) => {
+		const formData = new FormData()
+		formData.append('file', file)
+
+		const res = await $fetch<{ avatarUrl: string }>(
+			`/api/users/${userId}/avatar`,
+			{
+				method: 'POST',
+				body: formData,
+			},
+		)
+
+		return res.avatarUrl
+	}
+
 	return {
 		user,
 		isAuthenticated,
@@ -61,5 +76,6 @@ export const useUserStore = defineStore('user', () => {
 		isReady,
 		deleteUser,
 		updateUser,
+		uploadAvatar,
 	}
 })

@@ -1,5 +1,5 @@
 export type UpdateUserPayload = {
-	name: string
-	surName: string
+	name?: string
+	surName?: string
 	avatarUrl?: string | null
 }

@@ -171,7 +171,7 @@ onUnmounted(() => {
 
 .header {
 	padding: 1.12rem 0;
-	border: 1px solid $primary;
+	border-bottom: 1px solid $primary;
 	position: relative;
 
 	&__wrapper {

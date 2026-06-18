@@ -3,6 +3,7 @@
 		<Transition name="modal-fade">
 			<div v-if="modalStore.isModalOpen" ref="overlayRef" class="modal-overlay">
 				<form
+					novalidate
 					ref="modalWindow"
 					@submit.prevent="submitForm"
 					class="modal"
@@ -18,7 +19,7 @@
 							Х
 						</button>
 						<span class="modal__title">{{
-							isRegistrationMode ? 'Регистрация' : 'Вход в аккаунт'
+							isRegistrationMode ? 'Вход в аккаунт' : 'Регистрация'
 						}}</span>
 						<div class="modal__main-wrapper" v-if="!userStore.isAuthenticated">
 							<div class="modal__registration-block" v-if="isRegistrationMode">
@@ -121,7 +122,7 @@
 										</svg>
 									</label>
 									<input
-										type="password"
+										:type="showPassword ? 'text' : 'password'"
 										name="password"
 										id="password"
 										class="modal-input__input"
@@ -130,6 +131,25 @@
 										required
 										autocomplete="new-password"
 									/>
+									<button
+										class="modal-input__toggle-password-btn btn btn--password"
+										@click="togglePassword"
+										type="button"
+										aria-label="Открыть/скрыть содержимое пароля"
+									>
+										<img
+											v-if="inputType === 'password'"
+											class="modal-input__toggle-password-icon"
+											:src="
+												showPassword
+													? '/images/password-hide.png'
+													: '/images/password-show.png'
+											"
+											alt="password-show-icon"
+											width="20"
+											height="20"
+										/>
+									</button>
 								</div>
 								<div class="modal-input">
 									<label for="confirmPassword" class="modal-input__label">
@@ -148,7 +168,7 @@
 										</svg>
 									</label>
 									<input
-										type="password"
+										:type="inputType"
 										name="confirmPassword"
 										id="confirmPassword"
 										class="modal-input__input"
@@ -204,7 +224,7 @@
 										</svg>
 									</label>
 									<input
-										type="password"
+										:type="showPassword ? 'text' : 'password'"
 										name="password"
 										id="password"
 										class="modal-input__input"
@@ -213,6 +233,25 @@
 										required
 										autocomplete="current-password"
 									/>
+									<button
+										class="modal-input__toggle-password-btn btn btn--password"
+										@click="togglePassword"
+										type="button"
+										aria-label="Открыть/скрыть содержимое пароля"
+									>
+										<img
+											v-if="inputType === 'password'"
+											class="modal-input__toggle-password-icon"
+											:src="
+												showPassword
+													? '/images/password-hide.png'
+													: '/images/password-show.png'
+											"
+											alt="password-show-icon"
+											width="20"
+											height="20"
+										/>
+									</button>
 								</div>
 							</div>
 							<button
@@ -241,11 +280,12 @@
 								errors.form ||
 								errors.email ||
 								errors.password ||
-								errors.confirmPassword
+								errors.confirmPassword ||
+								errors.form
 							}}</span>
 						</div>
 						<div class="modal__auth-complete" v-else>
-							<span class="modal__success">Вы уже авторизованы</span>
+							<span class="modal__success">Вы уже авторизованы!</span>
 							<button
 								class="modal__logout-btn btn btn--transparent"
 								type="button"
@@ -272,8 +312,8 @@ const userStore = useUserStore()
 
 const isRegistrationMode = ref(true)
 const isSubmitting = ref(false)
+const inputType = ref('password')
 const showPassword = ref(false)
-const showConfirmPassword = ref(false)
 
 // таргет для onClickOutside
 const target = useTemplateRef('modalWindow')
@@ -310,24 +350,26 @@ const clearForm = () => {
 	confirmPassword.value = ''
 	nameInput.value = ''
 	surnameInput.value = ''
-	showPassword.value = false
-	showConfirmPassword.value = false
 	clearErrors()
+	showPassword.value = false
 }
 
 const closeModal = () => {
 	modalStore.closeModal()
 	clearForm()
+	showPassword.value = false
 }
 
 const changeMode = () => {
 	isRegistrationMode.value = !isRegistrationMode.value
 	clearForm()
+	showPassword.value = false
 }
 
 const handleLogout = async () => {
 	await userStore.logout()
 	closeModal()
+	showPassword.value = false
 }
 
 const validateForm = () => {
@@ -416,7 +458,12 @@ const submitForm = async () => {
 		errors.value.form = data?.statusMessage || 'Ошибка авторизации'
 	} finally {
 		isSubmitting.value = false
+		showPassword.value = false
 	}
+}
+
+const togglePassword = () => {
+	showPassword.value = !showPassword.value
 }
 
 onMounted(() => {
@@ -528,6 +575,10 @@ onMounted(() => {
 		text-align: center;
 	}
 
+	&__success {
+		font-size: $px-20;
+	}
+
 	&--active {
 		opacity: 1;
 		pointer-events: all;
@@ -573,6 +624,14 @@ onMounted(() => {
 			font-size: $px-12;
 			line-height: 110%;
 		}
+	}
+
+	&__toggle-password-btn {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		right: 2%;
+		z-index: 5;
 	}
 }
 

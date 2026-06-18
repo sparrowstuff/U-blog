@@ -9,6 +9,8 @@
 							:src="comment.user.avatarUrl"
 							:alt="`${comment.user.name} avatar`"
 							class="comment__author-img"
+							width="40"
+							height="40"
 						/>
 						<h4 class="comment__author-name">
 							{{ comment.user.name }} {{ comment.user.surName }}
@@ -125,12 +127,23 @@ const deleteThisComment = async () => {
 
 	&__heading {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: 0.62rem;
 
 		@media (max-width: 48rem) {
 			justify-content: space-between;
 		}
+
+		@media (max-width: 31.25rem) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	&__author-block {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	&__author-name {

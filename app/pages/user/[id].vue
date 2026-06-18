@@ -5,18 +5,28 @@
 				<div class="profile__main">
 					<h1 class="profile__main-title">Информация аккаунта:</h1>
 					<div class="profile__wrapper">
+						<div class="profile__info">
+							<img
+								class="profile__user-photo"
+								:src="userStore.user?.avatarUrl || '/images/no-photo.webp'"
+								alt="Profile photo"
+								width="40"
+								height="40"
+								aria-label="Фото профиля"
+							/>
+							<div class="profile__info-inner">
+								<p class="profile__name">
+									Имя: <b>{{ userStore.user?.name }}</b>
+								</p>
+								<span class="profile__surname"
+									>Фамилия: <b>{{ userStore.user?.surName }}</b></span
+								>
+							</div>
+						</div>
 						<div class="profile__heading">
 							<h2 class="profile__email">
 								Поч. адрес: <b>{{ userStore.user?.email }}</b>
 							</h2>
-						</div>
-						<div class="profile__info">
-							<p class="profile__name">
-								Имя: <b>{{ userStore.user?.name }}</b>
-							</p>
-							<span class="profile__surname"
-								>Фамилия: <b>{{ userStore.user?.surName }}</b></span
-							>
 						</div>
 						<span class="profile__created-at"
 							>Создан: <b>{{ dateFormatted }}</b></span
@@ -195,6 +205,10 @@ onMounted(async () => {
 		flex-direction: column;
 		gap: 1rem;
 		margin-bottom: 1.12rem;
+
+		@media (max-width: 48rem) {
+			margin-bottom: unset;
+		}
 	}
 
 	&__main-title {
@@ -211,13 +225,17 @@ onMounted(async () => {
 	&__wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: 0.62rem;
+		gap: 1rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 		border: 1px solid $white;
 		border-radius: 0.5rem;
 		width: 100%;
 
 		position: relative;
+
+		@media (max-width: 25rem) {
+			align-items: center;
+		}
 	}
 
 	&__heading {
@@ -240,12 +258,33 @@ onMounted(async () => {
 		b {
 			color: $white;
 		}
+
+		@media (max-width: 25rem) {
+			text-align: center;
+		}
 	}
 
 	&__info {
 		display: flex;
+		align-items: center;
+		gap: 0.62rem;
+
+		@media (max-width: 25rem) {
+			flex-direction: column;
+		}
+	}
+
+	&__info-inner {
+		display: flex;
 		flex-direction: column;
 		gap: 0.62rem;
+	}
+
+	&__user-photo {
+		border-radius: 50%;
+		object-fit: cover;
+		object-position: center;
+		display: block;
 	}
 
 	&__picture {

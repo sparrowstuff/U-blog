@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { PublicPost } from '@/types/PublicPost'
-import type { ReactionType } from '@/types/Reaction'
 import type { ReactionResponse } from '@/types/Reaction'
 
 export const usePostsStore = defineStore('posts', () => {
@@ -65,7 +64,7 @@ export const usePostsStore = defineStore('posts', () => {
 				body: payload,
 			})
 
-			await fetchPosts()
+			await fetchUserPosts(payload.userId)
 		} catch (e: any) {
 			customError.value = e?.data?.statusMessage || 'Ошибка создания поста'
 			throw e

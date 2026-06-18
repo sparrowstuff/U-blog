@@ -15,6 +15,7 @@ export default defineEventHandler(async event => {
 			email: true,
 			createdAt: true,
 			isAdmin: true,
+			avatarUrl: true,
 		},
 	})
 

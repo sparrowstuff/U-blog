@@ -26,7 +26,7 @@
 					id="addPostDescription"
 					required
 					minlength="5"
-					maxlength="300"
+					maxlength="2000"
 					autocomplete="post-description"
 					rows="5"
 					cols="33"

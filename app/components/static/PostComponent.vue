@@ -3,9 +3,19 @@
 		<div class="post-card__wrapper" v-if="post">
 			<div class="post-card__heading">
 				<div class="post-card__inner-heading">
-					<h3 class="post-card__user-name">{{ post.user?.name }}</h3>
-					<span class="post-card__divide">|</span>
-					<p class="post-card__user-email">{{ post.user?.email }}</p>
+					<img
+						class="post-card__user-photo"
+						:src="post.user?.avatarUrl || '/images/no-photo.webp'"
+						alt="User photo"
+						aria-label="Фото профиля"
+						width="40"
+						height="40"
+					/>
+					<div class="post-card__user-info">
+						<h3 class="post-card__user-name">{{ post.user?.name }}</h3>
+						<!-- <span class="post-card__divide">|</span> -->
+						<!-- <p class="post-card__user-email">{{ post.user?.email }}</p> -->
+					</div>
 				</div>
 				<span class="post-card__created-at">{{ dateFormatted }}</span>
 			</div>
@@ -132,6 +142,7 @@ type PostCard = {
 		name: string
 		surName: string
 		email: string
+		avatarUrl?: string
 	}
 }
 
@@ -209,10 +220,6 @@ onMounted(async () => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.8rem;
-
-		@media (max-width: 48rem) {
-			gap: 0.4rem;
-		}
 	}
 
 	&__heading {
@@ -221,23 +228,57 @@ onMounted(async () => {
 		justify-content: space-between;
 		gap: 1rem;
 
-		@media (max-width: 31.25rem) {
+		@media (max-width: 25rem) {
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 0.5rem;
 		}
 	}
 
+	&__heading {
+		display: flex;
+		align-items: center;
+		gap: 0.62rem;
+
+		@media (max-width: 25rem) {
+			align-items: flex-start;
+		}
+	}
+
 	&__inner-heading {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	&__user-info {
+		display: flex;
+		align-items: center;
 		gap: 0.3rem;
+
+		@media (max-width: 25rem) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	&__user-photo {
+		border-radius: 50%;
+		object-fit: cover;
+		object-position: center;
+		display: block;
 	}
 
 	&__user-name,
 	&__user-email {
 		font-weight: 600;
 		line-height: 110%;
+	}
+
+	&__divide {
+		@media (max-width: 25rem) {
+			display: none;
+		}
 	}
 
 	&__user-name {
@@ -306,9 +347,9 @@ onMounted(async () => {
 		}
 	}
 
-	&__post-description {
-		font-size: $px-14;
-	}
+	// &__post-description {
+	// 	font-size: $px-14;
+	// }
 
 	&__commentary-block {
 		display: flex;

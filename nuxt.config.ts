@@ -17,4 +17,15 @@ export default defineNuxtConfig({
 			include: ['@vue/devtools-core', '@vue/devtools-kit'],
 		},
 	},
+	app: {
+		head: {
+			link: [
+				{
+					rel: 'icon',
+					type: 'image/svg+xml',
+					href: '/public/favicon.svg',
+				},
+			],
+		},
+	},
 })

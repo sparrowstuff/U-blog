@@ -51,6 +51,18 @@
 				{{ isSubmitting ? 'Сохранение...' : 'Обновить профиль' }}
 			</button>
 		</form>
+		<div class="update-user-form__avatar-preview" v-if="avatarPreviewUrl">
+			<span class="update-user-form__preview-text"
+				>Предпросмотр нового аватара:
+			</span>
+			<img
+				class="update-user-form__preview-img"
+				:src="avatarPreviewUrl"
+				alt="Preview avatar"
+				width="60"
+				height="60"
+			/>
+		</div>
 		<button
 			class="update-user-form__cancel-btn btn btn--transparent"
 			type="button"
@@ -63,15 +75,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '~/stores/userStore'
 import type { UpdateUserPayload } from '~/types/UpdateUserType'
-
-const userName = ref('')
-const userSurName = ref('')
-const userAvatarFile = ref<File | null>(null)
-const isSubmitting = ref(false)
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -83,16 +90,34 @@ const emit = defineEmits<{
 	(e: 'cancel'): void
 }>()
 
+const userName = ref('')
+const userSurName = ref('')
+const userAvatarFile = ref<File | null>(null)
+const isSubmitting = ref(false)
+const avatarPreviewUrl = ref<string | null>(
+	userStore.user?.avatarUrl || '/images/no-photo.webp',
+)
+
 const onAvatarChange = (event: Event) => {
 	const target = event.target as HTMLInputElement
 	const file = target.files?.[0] ?? null
+
+	if (avatarPreviewUrl.value?.startsWith('blob:')) {
+		URL.revokeObjectURL(avatarPreviewUrl.value)
+	}
+
 	userAvatarFile.value = file
+
+	avatarPreviewUrl.value = file
+		? URL.createObjectURL(file)
+		: userStore.user?.avatarUrl || '/images/no-photo.webp'
 }
 
 const clearForm = () => {
 	userName.value = ''
 	userSurName.value = ''
 	userAvatarFile.value = null
+	avatarPreviewUrl.value = userStore.user?.avatarUrl || '/images/no-photo.webp'
 }
 
 const validateForm = () => {
@@ -102,16 +127,28 @@ const validateForm = () => {
 }
 
 const updateUser = async (userId: number) => {
-	if (!validateForm()) return
+	// if (!validateForm()) return
 	if (!userId || Number.isNaN(userId)) return
+
+	const hasName = !!userName.value.trim()
+	const hasSurName = !!userSurName.value.trim()
+	const hasAvatar = !!userAvatarFile.value
+
+	if (!hasName && !hasSurName && !hasAvatar) return
 
 	isSubmitting.value = true
 
 	try {
+		let avatarUrl: string | null | undefined = undefined
+
+		if (userAvatarFile.value) {
+			avatarUrl = await userStore.uploadAvatar(userId, userAvatarFile.value)
+		}
+
 		const payload: UpdateUserPayload = {
-			name: userName.value.trim(),
-			surName: userSurName.value.trim(),
-			avatarUrl: null,
+			name: hasName ? userName.value.trim() : userStore.user?.name,
+			surName: hasSurName ? userSurName.value.trim() : userStore.user?.surName,
+			...(avatarUrl ? { avatarUrl } : {}),
 		}
 
 		await userStore.updateUser(userId, payload)
@@ -121,6 +158,12 @@ const updateUser = async (userId: number) => {
 		isSubmitting.value = false
 	}
 }
+
+onBeforeUnmount(() => {
+	if (avatarPreviewUrl.value?.startsWith('blob:')) {
+		URL.revokeObjectURL(avatarPreviewUrl.value)
+	}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -210,6 +253,25 @@ const updateUser = async (userId: number) => {
 			line-height: 110%;
 			color: $white;
 		}
+	}
+
+	&__avatar-preview {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+
+		@media (max-width: 25rem) {
+			flex-direction: column;
+		}
+	}
+
+	&__preview-img {
+		border-radius: 50%;
+		object-fit: cover;
+		object-position: center;
+		border: 1px solid $blue-grey;
+		overflow: hidden;
+		display: block;
 	}
 
 	&__cancel-btn {

@@ -23,6 +23,7 @@
 	animation: hue-spin 2s ease-in infinite;
 	color: $light-white;
 	padding: 0.2rem 0.5rem;
+	z-index: 0;
 
 	transition:
 		filter $transition-300,
@@ -41,6 +42,9 @@
 		color: $white;
 		border: 2px solid $white;
 		animation: none;
+		z-index: 0;
+		isolation: isolate;
+		width: fit-content;
 
 		&::before {
 			content: '';
@@ -156,6 +160,41 @@
 
 			border: unset;
 			background: unset;
+		}
+	}
+
+	&--password {
+		border: unset;
+		padding: unset;
+		background: none;
+
+		transition: scale $transition-300;
+
+		img {
+			border-radius: 50%;
+			overflow: hidden;
+		}
+
+		&:hover,
+		&:focus-visible {
+			border: unset;
+			padding: unset;
+		}
+	}
+
+	&--sidebar {
+		padding: unset;
+		background: unset;
+		border: unset;
+
+		transition: scale $transition-300;
+
+		&:hover,
+		&:focus-visible {
+			scale: 1.2;
+			border: unset;
+
+			animation: none;
 		}
 	}
 }
