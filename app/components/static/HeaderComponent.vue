@@ -95,9 +95,6 @@
 							class="header__link"
 							aria-label="Переход на страницу пользователя"
 							:to="profileTo"
-							:class="{ 'header__link--disabled': isUserActive }"
-							:tabindex="!isUserActive ? -1 : 0"
-							:aria-disabled="!isUserActive"
 							>Профиль</NuxtLink
 						>
 						<NuxtLink
@@ -148,6 +145,8 @@ const profileTo = computed(() => {
 	return userStore.user ? `/user/${userStore.user?.id}` : '/'
 })
 
+const isProfileAvailable = computed(() => !!userStore.user)
+
 const isDesktop = ref(true)
 const isBurgerOpened = ref(false)
 
@@ -162,8 +161,6 @@ const openBurgerMenu = () => {
 const openModal = () => {
 	modal.openModal()
 }
-
-const isUserActive = computed(() => !!userStore.user)
 
 const target = useTemplateRef('burger-menu')
 
@@ -224,11 +221,11 @@ onUnmounted(() => {
 		font-size: 1rem;
 		line-height: 110%;
 		// color: $black;
+		user-select: none;
 
 		transition:
 			scale $transition-300,
-			color $transition-300,
-			opacity $transition-300;
+			color $transition-300;
 
 		&:hover,
 		&:focus-visible {
@@ -347,7 +344,7 @@ onUnmounted(() => {
 
 .router-link-active {
 	// transition: color $transition-300;
-	color: $primary;
+	color: $apple;
 	pointer-events: none;
 }
 </style>

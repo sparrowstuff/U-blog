@@ -24,6 +24,7 @@
 		</div>
 		<UpBtn />
 	</section>
+	<Banner />
 </template>
 
 <script setup lang="ts">
@@ -32,6 +33,7 @@ import { ref, onMounted } from 'vue'
 import UpBtn from '../components/static/UpBtn.vue'
 import SidebarComponent from '../components/static/SidebarComponent.vue'
 import typeWriter from '@/utils/typeWriter.js'
+import Banner from '../components/static/Banner.vue'
 
 const typeWrittenMessage1 = ref('')
 const typeWrittenMessage2 = ref('')
@@ -98,7 +100,7 @@ onMounted(() => {
 	}
 
 	&__additional-middle {
-		font-size: $px-16;
+		font-size: $px-22;
 		line-height: 110%;
 		font-weight: 400;
 		text-align: center;
