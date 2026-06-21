@@ -2,10 +2,13 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { PublicPost } from '@/types/PublicPost'
 import type { ReactionResponse } from '@/types/Reaction'
+import type { ReactionType } from '@/types/Reaction'
 
 export const usePostsStore = defineStore('posts', () => {
 	const posts = ref<PublicPost[]>([])
 	const currentPost = ref<PublicPost | null>(null)
+	const likedPosts = ref<PublicPost[]>([])
+
 	const isLoading = ref(false)
 	const customError = ref<string | null>(null)
 
@@ -88,6 +91,29 @@ export const usePostsStore = defineStore('posts', () => {
 		}
 	}
 
+	const fetchLikedByUserPosts = async (userId: number) => {
+		isLoading.value = true
+		customError.value = null
+
+		try {
+			const res = await $fetch<PublicPost[]>(`/api/users/${userId}/liked-posts`)
+
+			likedPosts.value = res
+		} catch (err: any) {
+			customError.value = err?.data?.statusMessage || 'Ошибка загрузки постов'
+		} finally {
+			isLoading.value = false
+		}
+	}
+
+	const removeLikedPost = async (postId: number) => {
+		likedPosts.value = likedPosts.value.filter(post => post.id !== postId)
+	}
+
+	const refreshLikedPosts = async (userId: number) => {
+		await fetchLikedByUserPosts(userId)
+	}
+
 	const deletePost = async (postId: number, userId: number) => {
 		isLoading.value = true
 		customError.value = null
@@ -118,7 +144,7 @@ export const usePostsStore = defineStore('posts', () => {
 		postId: number,
 		likesCount: number,
 		dislikesCount: number,
-		userReaction: 'like' | 'dislike' | null,
+		userReaction: ReactionType,
 	) => {
 		const applyUpdate = (post: PublicPost) => {
 			post.likesCount = likesCount
@@ -128,6 +154,15 @@ export const usePostsStore = defineStore('posts', () => {
 
 		const post = posts.value.find(item => item.id === postId)
 		if (post) applyUpdate(post)
+
+		const likedPost = likedPosts.value.find(item => item.id === postId)
+		if (likedPost) {
+			applyUpdate(likedPost)
+
+			if (userReaction !== 'like') {
+				likedPosts.value = likedPosts.value.filter(item => item.id !== postId)
+			}
+		}
 
 		if (currentPost.value?.id === postId) {
 			applyUpdate(currentPost.value)
@@ -172,6 +207,7 @@ export const usePostsStore = defineStore('posts', () => {
 
 	return {
 		posts,
+		likedPosts,
 		currentPost,
 		isLoading,
 		customError,
@@ -180,10 +216,14 @@ export const usePostsStore = defineStore('posts', () => {
 		clearCurrentPost,
 		fetchPosts,
 		fetchPostById,
+		fetchLikedByUserPosts,
+		removeLikedPost,
+		refreshLikedPosts,
 		addPost,
 		fetchUserPosts,
 		deletePost,
 		toggleReaction,
+		updatePostReaction,
 		clearPostsState,
 	}
 })

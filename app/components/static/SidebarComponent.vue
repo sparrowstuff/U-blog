@@ -111,7 +111,7 @@
 				<NuxtLink
 					class="sidebar__link"
 					aria-label="Понравившиеся"
-					:to="'/liked'"
+					@click="toLikedPage"
 				>
 					<svg
 						class="sidebar__link-icon"
@@ -198,6 +198,16 @@ const mobileChangeUi = () => {
 
 const openModal = () => {
 	modalStore.openModal()
+}
+
+const toLikedPage = () => {
+	if (!userStore.user)
+		return alert(
+			'Не авторизованные пользователи не могут смотреть понравившиеся посты',
+		)
+	else {
+		navigateTo('/liked')
+	}
 }
 
 onMounted(() => {

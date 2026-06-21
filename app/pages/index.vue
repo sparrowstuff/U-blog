@@ -35,7 +35,6 @@ import typeWriter from '@/utils/typeWriter.js'
 
 const typeWrittenMessage1 = ref('')
 const typeWrittenMessage2 = ref('')
-const typeWrittenMessage3 = ref('')
 
 onMounted(() => {
 	typeWriter('площадка для всего, что у вас на уме...', value => {

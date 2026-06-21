@@ -133,7 +133,8 @@
 									/>
 									<button
 										class="modal-input__toggle-password-btn btn btn--password"
-										@click="togglePassword"
+										@mouseenter="showPassword = true"
+										@mouseleave="showPassword = false"
 										type="button"
 										aria-label="Открыть/скрыть содержимое пароля"
 									>
@@ -235,7 +236,8 @@
 									/>
 									<button
 										class="modal-input__toggle-password-btn btn btn--password"
-										@click="togglePassword"
+										@mouseenter="showPassword = true"
+										@mouseleave="showPassword = false"
 										type="button"
 										aria-label="Открыть/скрыть содержимое пароля"
 									>
@@ -370,6 +372,7 @@ const handleLogout = async () => {
 	await userStore.logout()
 	closeModal()
 	showPassword.value = false
+	navigateTo('/')
 }
 
 const validateForm = () => {

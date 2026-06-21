@@ -90,8 +90,7 @@
 <script setup lang="ts">
 import { usePostsStore } from '~/stores/postsStore'
 import { ref, computed } from 'vue'
-
-type ReactionType = 'like' | 'dislike' | null
+import type { ReactionType } from '@/types/Reaction'
 
 const props = defineProps<{
 	postId: number
@@ -107,11 +106,35 @@ const isDisliked = computed(() => props.userReaction === 'dislike')
 const isLoading = computed(() => postsStore.isLoading)
 
 const addLike = async () => {
-	await postsStore.toggleReaction(props.postId, 'like')
+	// await postsStore.toggleReaction(props.postId, 'like')
+
+	const res = await postsStore.toggleReaction(props.postId, 'like')
+
+	postsStore.updatePostReaction(
+		props.postId,
+		res.likesCount,
+		res.dislikesCount,
+		res.userReaction,
+	)
+
+	if (res.userReaction !== 'like') {
+		postsStore.removeLikedPost(props.postId)
+	}
 }
 
 const addDislike = async () => {
-	await postsStore.toggleReaction(props.postId, 'dislike')
+	// await postsStore.toggleReaction(props.postId, 'dislike')
+
+	const res = await postsStore.toggleReaction(props.postId, 'dislike')
+
+	postsStore.updatePostReaction(
+		props.postId,
+		res.likesCount,
+		res.dislikesCount,
+		res.userReaction,
+	)
+
+	postsStore.removeLikedPost(props.postId)
 }
 </script>
 

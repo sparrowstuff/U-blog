@@ -33,6 +33,12 @@
 					>
 					<NuxtLink
 						class="header__link"
+						aria-label="Переход на страницу блога"
+						:to="'/blog'"
+						>Блог</NuxtLink
+					>
+					<NuxtLink
+						class="header__link"
 						aria-label="Переход на страницу пользователя"
 						:to="profileTo"
 						>Профиль</NuxtLink
@@ -89,7 +95,16 @@
 							class="header__link"
 							aria-label="Переход на страницу пользователя"
 							:to="profileTo"
+							:class="{ 'header__link--disabled': isUserActive }"
+							:tabindex="!isUserActive ? -1 : 0"
+							:aria-disabled="!isUserActive"
 							>Профиль</NuxtLink
+						>
+						<NuxtLink
+							class="header__link"
+							aria-label="Переход на страницу блога"
+							:to="'/blog'"
+							>Блог</NuxtLink
 						>
 						<button
 							class="header__modal-menu btn btn--modal"
@@ -147,6 +162,8 @@ const openBurgerMenu = () => {
 const openModal = () => {
 	modal.openModal()
 }
+
+const isUserActive = computed(() => !!userStore.user)
 
 const target = useTemplateRef('burger-menu')
 
@@ -208,12 +225,21 @@ onUnmounted(() => {
 		line-height: 110%;
 		// color: $black;
 
-		transition: scale $transition-300;
+		transition:
+			scale $transition-300,
+			color $transition-300,
+			opacity $transition-300;
 
 		&:hover,
 		&:focus-visible {
 			scale: 1.1;
 		}
+	}
+
+	&__link--disabled {
+		pointer-events: none;
+		color: $primary;
+		opacity: 0.5;
 	}
 
 	&__mobile {
@@ -320,7 +346,7 @@ onUnmounted(() => {
 }
 
 .router-link-active {
-	transition: all $transition-300;
+	// transition: color $transition-300;
 	color: $primary;
 	pointer-events: none;
 }

@@ -130,6 +130,7 @@ const cancelTexting = () => {
 		@media (max-width: 48rem) {
 			padding: 0.1rem 0.2rem;
 			font-size: $px-12;
+			width: 100%;
 		}
 	}
 }
