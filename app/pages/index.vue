@@ -20,11 +20,11 @@
 					<p class="hero__additional-text">{{ typeWrittenMessage2 }}</p>
 				</div>
 			</div>
-			<div class="hero__additional"></div>
+
+			<AddPostForm />
 		</div>
 		<UpBtn />
 	</section>
-	<Banner />
 </template>
 
 <script setup lang="ts">
@@ -33,7 +33,7 @@ import { ref, onMounted } from 'vue'
 import UpBtn from '../components/static/UpBtn.vue'
 import SidebarComponent from '../components/static/SidebarComponent.vue'
 import typeWriter from '@/utils/typeWriter.js'
-import Banner from '../components/static/Banner.vue'
+import AddPostForm from '../components/static/AddPostForm.vue'
 
 const typeWrittenMessage1 = ref('')
 const typeWrittenMessage2 = ref('')
@@ -70,6 +70,12 @@ onMounted(() => {
 		display: grid;
 		grid-template-columns: 0.5fr 1fr;
 		gap: 1rem;
+
+		margin-bottom: 1.12rem;
+
+		@media (max-width: 48rem) {
+			margin-bottom: 0.5rem;
+		}
 	}
 
 	&__wrapper {

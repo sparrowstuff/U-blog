@@ -1,5 +1,5 @@
 <template>
-	<section class="liked" v-if="userStore.user && !isLoading">
+	<section class="liked">
 		<div class="container">
 			<div class="liked__wrapper">
 				<div class="liked__info">
@@ -8,26 +8,34 @@
 					</h2>
 					<span class="liked__user-name">{{ userStore.user?.name }}</span>
 				</div>
-				<AppPagination
-					:total-pages="totalPages"
-					:current-page="currentPage"
-					@update:current-page="changePage"
-				/>
-				<div class="liked__content" v-if="!isLoading">
-					<TransitionGroup class="liked__posts" name="post-list" tag="article">
-						<PostComponent
-							v-for="post in paginatedPosts"
-							:key="post.id"
-							:post="post"
-							:show-comments-immediately="false"
+				<div class="liked__loaded" v-if="userStore.user && !isLoading">
+					<div class="liked__content" v-if="postsStore.likedPosts.length > 0">
+						<AppPagination
+							:total-pages="totalPages"
+							:current-page="currentPage"
+							@update:current-page="changePage"
 						/>
-					</TransitionGroup>
+						<TransitionGroup
+							class="liked__posts"
+							name="post-list"
+							tag="article"
+						>
+							<PostComponent
+								v-for="post in paginatedPosts"
+								:key="post.id"
+								:post="post"
+								:show-comments-immediately="false"
+							/>
+						</TransitionGroup>
+					</div>
+					<span class="liked__no-content-text" v-else
+						>Однако, пока что, вам ничего не понравилось...</span
+					>
 				</div>
+				<LoaderImg v-else />
 			</div>
 		</div>
 	</section>
-
-	<LoaderImg v-else />
 
 	<UpBtn />
 </template>
@@ -150,6 +158,14 @@ onMounted(async () => {
 		@media (max-width: 48rem) {
 			gap: 0.5rem;
 		}
+	}
+
+	&__no-content-text {
+		font-size: $px-22;
+		line-height: 110%;
+		font-weight: 400;
+		color: $apple;
+		text-align: right;
 	}
 
 	.post-list-enter-active,

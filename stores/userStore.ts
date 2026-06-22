@@ -28,9 +28,13 @@ export const useUserStore = defineStore('user', () => {
 	}
 
 	const logout = async () => {
-		await $fetch('/api/auth/logout', { method: 'POST' })
+		const userConfirmation = confirm('Выйти из аккаунта?')
 
-		clearUser()
+		if (!userConfirmation) return
+		else {
+			await $fetch('/api/auth/logout', { method: 'POST' })
+			clearUser()
+		}
 	}
 
 	const deleteUser = async (userId: number) => {

@@ -58,6 +58,18 @@
 		>
 			{{ postsStore.isLoading ? 'Сохранение...' : 'Создать пост' }}
 		</button>
+
+		<span class="add-post-form__go-to-text" v-if="isPostSubmitted"
+			>Супер! Пост отправлен! Посмотреть в
+			<b>
+				<NuxtLink
+					class="add-post-form__blog-link"
+					aria-label="Переход на страницу блога"
+					:to="'/blog'"
+					>Блоге</NuxtLink
+				></b
+			>?</span
+		>
 	</form>
 </template>
 
@@ -85,6 +97,7 @@ const userStore = useUserStore()
 
 const postTitle = ref('')
 const postDescription = ref('')
+const isPostSubmitted = ref(false)
 
 const fieldErrors = ref({
 	title: '',
@@ -131,7 +144,9 @@ const submitForm = async () => {
 			userId: userStore.user.id,
 		})
 		;((postTitle.value = ''), (postDescription.value = ''))
+
 		clearErrors()
+		isPostSubmitted.value = true
 	} catch (err) {
 		console.error('Что-то пошло не так', err)
 	}
@@ -143,23 +158,41 @@ const submitForm = async () => {
 
 .add-post-form {
 	width: 100%;
-	$root: &;
 	padding: 0.62rem 0.62rem 0.62rem 0.62rem;
-	border: 1px solid $primary;
+	border: 1px solid #aaaaaa;
 	border-radius: 0.5rem;
-	background-color: $black;
-
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
 	align-items: center;
-	margin-top: 1.12rem;
-	margin-bottom: 1.12rem;
+	overflow: hidden;
+	min-height: 18.75rem;
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-image: url('/images/chat-banner-edited.jpg');
+		background-position: center;
+		background-size: cover;
+		filter: blur(8px);
+		transform: scale(1.05);
+		z-index: 0;
+	}
 
 	@media (max-width: 48rem) {
+		min-height: 12rem;
 		gap: 0.3rem;
-		margin-top: 0.5rem;
-		margin-bottom: 0.5rem;
+	}
+
+	&__wrapper,
+	&__global-error,
+	&__clear-btn,
+	&__submit-btn,
+	&__go-to-text {
+		position: relative;
+		z-index: 1;
 	}
 
 	&__wrapper {
@@ -173,6 +206,7 @@ const submitForm = async () => {
 	&__title {
 		font-size: $px-24;
 		line-height: 100%;
+		color: $black;
 	}
 
 	&__submit-btn {
@@ -181,6 +215,31 @@ const submitForm = async () => {
 		@media (max-width: 48rem) {
 			padding: 0.1rem 0.5rem;
 			font-size: $px-14;
+		}
+	}
+
+	&__clear-btn {
+		color: $black;
+	}
+
+	&__go-to-text {
+		font-size: $px-20;
+		line-height: 110%;
+		font-weight: 400;
+		color: $apple;
+		text-align: center;
+	}
+
+	&__blog-link {
+		font-size: $px-20;
+		line-height: 110%;
+		color: $apple;
+
+		transition: color $transition-300;
+
+		&:hover,
+		&:focus-visible {
+			color: $black;
 		}
 	}
 }
@@ -211,10 +270,10 @@ const submitForm = async () => {
 
 	&__input {
 		width: 100%;
-		border: 1px solid $blue-grey;
+		border: 2px solid $blue-grey;
 		border-radius: 0.3rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		color: $white;
+		color: $black;
 		background-color: transparent;
 
 		transition: border-color $transition-300;
@@ -222,7 +281,7 @@ const submitForm = async () => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			color: $white;
+			color: $black;
 		}
 	}
 }
@@ -233,10 +292,10 @@ const submitForm = async () => {
 
 	&__textarea {
 		width: 100%;
-		border: 1px solid $blue-grey;
+		border: 2px solid $blue-grey;
 		border-radius: 0.3rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		color: $white;
+		color: $black;
 		font-size: $px-16;
 		line-height: 110%;
 		background-color: transparent;
@@ -245,7 +304,7 @@ const submitForm = async () => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			color: $white;
+			color: $black;
 		}
 	}
 }

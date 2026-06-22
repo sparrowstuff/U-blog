@@ -40,6 +40,7 @@
 										</svg>
 									</label>
 									<input
+										:class="{ 'modal-input__input--error': errors.email }"
 										type="email"
 										name="email"
 										id="email"
@@ -67,6 +68,7 @@
 										</svg>
 									</label>
 									<input
+										:class="{ 'modal-input__input--error': errors.name }"
 										type="text"
 										name="name"
 										id="name"
@@ -76,7 +78,6 @@
 										required
 										autocomplete="given-name"
 									/>
-									<span class="modal__error-text">{{ errors.name }}</span>
 								</div>
 								<div class="modal-input">
 									<label for="surname" class="modal-input__label">
@@ -95,6 +96,7 @@
 										</svg>
 									</label>
 									<input
+										:class="{ 'modal-input__input--error': errors.surname }"
 										type="text"
 										name="surname"
 										id="surname"
@@ -122,6 +124,7 @@
 										</svg>
 									</label>
 									<input
+										:class="{ 'modal-input__input--error': errors.password }"
 										:type="showPassword ? 'text' : 'password'"
 										name="password"
 										id="password"
@@ -169,6 +172,9 @@
 										</svg>
 									</label>
 									<input
+										:class="{
+											'modal-input__input--error': errors.confirmPassword,
+										}"
 										:type="inputType"
 										name="confirmPassword"
 										id="confirmPassword"
@@ -279,11 +285,7 @@
 								}}
 							</button>
 							<span class="modal__global-error" v-if="errors">{{
-								errors.form ||
-								errors.email ||
-								errors.password ||
-								errors.confirmPassword ||
-								errors.form
+								formErrorMessage
 							}}</span>
 						</div>
 						<div class="modal__auth-complete" v-else>
@@ -304,7 +306,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted } from 'vue'
+import { ref, useTemplateRef, computed, onMounted } from 'vue'
 import { useModalStore } from '~/stores/modalStore'
 import { useUserStore } from '@/stores/userStore'
 import { onClickOutside, type MaybeElementRef } from '@vueuse/core'
@@ -317,7 +319,7 @@ const isSubmitting = ref(false)
 const inputType = ref('password')
 const showPassword = ref(false)
 
-// таргет для onClickOutside
+// таргет для onClickOutside - настроен также на html эл-те
 const target = useTemplateRef('modalWindow')
 
 const emailInput = ref('')
@@ -333,6 +335,18 @@ const errors = ref({
 	surname: '',
 	confirmPassword: '',
 	form: '',
+})
+
+const formErrorMessage = computed(() => {
+	return (
+		errors.value.email ||
+		errors.value.password ||
+		errors.value.name ||
+		errors.value.surname ||
+		errors.value.confirmPassword ||
+		errors.value.form ||
+		''
+	)
 })
 
 const clearErrors = () => {
@@ -456,17 +470,15 @@ const submitForm = async () => {
 			errors.value.name = data.fieldErrors.name || ''
 			errors.value.surname = data.fieldErrors.surname || ''
 			errors.value.confirmPassword = data.fieldErrors.confirmPassword || ''
+			errors.value.form = data.fieldErrors.form || data.statusMessage || ''
+		} else {
+			errors.value.form =
+				data?.statusMessage || data?.message || 'Ошибка авторизации'
 		}
-
-		errors.value.form = data?.statusMessage || 'Ошибка авторизации'
 	} finally {
 		isSubmitting.value = false
 		showPassword.value = false
 	}
-}
-
-const togglePassword = () => {
-	showPassword.value = !showPassword.value
 }
 
 onMounted(() => {
@@ -627,6 +639,11 @@ onMounted(() => {
 			font-size: $px-12;
 			line-height: 110%;
 		}
+	}
+
+	&__input--error {
+		border: 1px solid $red;
+		outline: 3px solid $red;
 	}
 
 	&__toggle-password-btn {

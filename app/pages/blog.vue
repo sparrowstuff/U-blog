@@ -17,7 +17,6 @@
 							:show-comments-immediately="false"
 						/>
 					</TransitionGroup>
-					<AddPostForm />
 				</div>
 				<LoaderImg v-else />
 			</div>
@@ -31,7 +30,6 @@ import { ref, computed, onMounted } from 'vue'
 
 import PostComponent from '../components/static/PostComponent.vue'
 import LoaderImg from '../components/static/LoaderImg.vue'
-import AddPostForm from '../components/static/AddPostForm.vue'
 import AppPagination from '../components/static/AppPagination.vue'
 import UpBtn from '../components/static/UpBtn.vue'
 

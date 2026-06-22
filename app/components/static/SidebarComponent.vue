@@ -3,45 +3,47 @@
 		class="sidebar"
 		:class="{ 'sidebar--active': isSidebarOpen, 'sidebar--mobile': !isDesktop }"
 	>
-		<button
-			class="sidebar__open-btn btn btn--sidebar"
-			type="button"
-			aria-label="Открыть/закрыть боковое меню"
-			@click="openSidebar"
-		>
-			<svg
-				class="sidebar__open-btn-icon"
-				width="20"
-				height="20"
-				viewBox="0 0 24 24"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					d="M21.97 15V9C21.97 4 19.97 2 14.97 2H8.96997C3.96997 2 1.96997 4 1.96997 9V15C1.96997 20 3.96997 22 8.96997 22H14.97C19.97 22 21.97 20 21.97 15Z"
-					stroke="#292D32"
-					stroke-width="1.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				/>
-				<path
-					d="M14.97 2V22"
-					stroke="#292D32"
-					stroke-width="1.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				/>
-				<path
-					d="M7.96997 9.43994L10.53 11.9999L7.96997 14.5599"
-					stroke="#292D32"
-					stroke-width="1.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				/>
-			</svg>
-		</button>
 		<div class="sidebar__wrapper">
 			<div class="sidebar__links-menu">
+				<button
+					class="sidebar__open-btn sidebar__link btn btn--sidebar"
+					type="button"
+					aria-label="Открыть/закрыть боковое меню"
+					@click="openSidebar"
+				>
+					<svg
+						class="sidebar__open-btn-icon"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M21.97 15V9C21.97 4 19.97 2 14.97 2H8.96997C3.96997 2 1.96997 4 1.96997 9V15C1.96997 20 3.96997 22 8.96997 22H14.97C19.97 22 21.97 20 21.97 15Z"
+							stroke="#292D32"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<path
+							d="M14.97 2V22"
+							stroke="#292D32"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<path
+							d="M7.96997 9.43994L10.53 11.9999L7.96997 14.5599"
+							stroke="#292D32"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+					<span class="sidebar__link-text">Закрыть</span>
+				</button>
+
 				<NuxtLink
 					class="sidebar__link"
 					aria-label="Переход на главную страницу"
@@ -146,6 +148,38 @@
 				>
 			</div>
 			<button
+				v-if="userStore.isAuthenticated"
+				class="sidebar__logout-btn btn btn--modal"
+				type="button"
+				aria-label="Выйти из аккаунта?"
+				@click="logout"
+			>
+				<span
+					class="sidebar__logout-btn-text"
+					v-if="isSidebarOpen || !isDesktop"
+					>Выйти из аккаунта?</span
+				>
+				<svg
+					v-else
+					class="sidebar__logout-btn-icon"
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					fill="none"
+					viewBox="0 0 24 24"
+				>
+					<path
+						fill="#1c274c"
+						d="M12 3.25a.75.75 0 0 1 0 1.5 7.25 7.25 0 0 0 0 14.5.75.75 0 0 1 0 1.5 8.75 8.75 0 1 1 0-17.5"
+					/>
+					<path
+						fill="#1c274c"
+						d="M16.47 9.53a.75.75 0 0 1 1.06-1.06l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H10a.75.75 0 0 1 0-1.5h8.19z"
+					/>
+				</svg>
+			</button>
+			<button
+				v-else
 				class="sidebar__login-btn btn btn--modal"
 				type="button"
 				aria-label="Открыть меню регистрации"
@@ -181,7 +215,7 @@ import { useModalStore } from '~/stores/modalStore'
 const userStore = useUserStore()
 const modalStore = useModalStore()
 
-const isSidebarOpen = ref(false)
+const isSidebarOpen = ref(true)
 const isDesktop = ref(true)
 
 const profileTo = computed(() => {
@@ -201,12 +235,20 @@ const openModal = () => {
 }
 
 const toLikedPage = () => {
-	if (!userStore.user)
+	if (!userStore.isAuthenticated)
 		return alert(
 			'Не авторизованные пользователи не могут смотреть понравившиеся посты',
 		)
 	else {
 		navigateTo('/liked')
+	}
+}
+
+const logout = async () => {
+	if (!userStore.isAuthenticated) return
+
+	if (userStore.isAuthenticated) {
+		await userStore.logout()
 	}
 }
 
@@ -225,7 +267,6 @@ onUnmounted(() => {
 
 .sidebar {
 	width: 3.5rem;
-	min-height: 14rem;
 	padding: 1rem 1rem 1rem 1rem;
 	border: 1px solid $apple;
 	border-radius: 0.62rem;
@@ -250,7 +291,8 @@ onUnmounted(() => {
 		gap: 0.3rem;
 	}
 
-	&__link {
+	&__link,
+	&__open-btn {
 		font-size: $px-18;
 		font-weight: 400;
 		color: $black;
@@ -267,13 +309,25 @@ onUnmounted(() => {
 		}
 	}
 
+	&__open-btn {
+		transition:
+			opacity $transition-300,
+			scale $transition-300,
+			transform $transition-300;
+	}
+
 	&__link-text {
 		opacity: 0;
+		pointer-events: none;
+
 		transition: opacity $transition-300;
 	}
 
-	&__login-btn {
+	&__login-btn,
+	&__logout-btn {
 		color: $black;
+		max-height: 2.35rem;
+		height: 100%;
 
 		padding: 0.5rem 0.5rem;
 		svg {
@@ -281,10 +335,12 @@ onUnmounted(() => {
 		}
 	}
 
-	&__open-btn {
-		transition:
-			opacity $transition-300,
-			scale $transition-300;
+	&__login-btn-text {
+		opacity: 0;
+	}
+
+	&__logout-btn-text {
+		opacity: 0;
 	}
 
 	&--active {
@@ -292,6 +348,14 @@ onUnmounted(() => {
 
 		#{$root}__link-text {
 			opacity: 1;
+		}
+
+		#{$root}__login-btn-text {
+			animation: btnTextAppearsOn 0.3s ease-in 0.2s forwards;
+		}
+
+		#{$root}__logout-btn-text {
+			animation: btnTextAppearsOn 0.3s ease-in 0.2s forwards;
 		}
 	}
 
@@ -331,6 +395,14 @@ onUnmounted(() => {
 		#{$root}__link-text {
 			opacity: 1;
 		}
+
+		#{$root}__login-btn-text {
+			animation: btnTextAppearsOn 0.3s ease-in 0.2s forwards;
+		}
+
+		#{$root}__logout-btn-text {
+			animation: btnTextAppearsOn 0.3s ease-in 0.2s forwards;
+		}
 	}
 
 	svg {
@@ -342,5 +414,15 @@ onUnmounted(() => {
 	transition: all $transition-300;
 	color: $primary;
 	pointer-events: none;
+}
+
+@keyframes btnTextAppearsOn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
 }
 </style>
