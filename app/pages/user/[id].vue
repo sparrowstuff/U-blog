@@ -81,7 +81,6 @@
 						/>
 					</div>
 				</div>
-				<AddPostForm />
 				<button
 					class="profile__delete-profile-btn btn btn--transparent"
 					type="button"
@@ -103,7 +102,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useUserStore } from '~/stores/userStore'
 import { usePostsStore } from '~/stores/postsStore'
-import AddPostForm from '~/app/components/static/AddPostForm.vue'
 import PostComponent from '~/app/components/static/PostComponent.vue'
 import LoaderImg from '~/app/components/static/LoaderImg.vue'
 import UpBtn from '~/app/components/static/UpBtn.vue'
@@ -145,7 +143,7 @@ const deleteAccount = async () => {
 
 	await userStore.deleteUser(userId)
 	postsStore.clearPostsState()
-	await navigateTo('/')
+	navigateTo('/')
 }
 
 const dateFormatted = computed(() => {
@@ -311,6 +309,11 @@ onMounted(async () => {
 		flex-direction: column;
 		width: 100%;
 		gap: 0.62rem;
+	}
+
+	&__delete-profile-btn {
+		margin-top: 2rem;
+		width: 100%;
 	}
 }
 </style>

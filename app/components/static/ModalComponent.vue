@@ -50,6 +50,24 @@
 										required
 										autocomplete="email"
 									/>
+									<button
+										class="modal-input__clear-input-btn btn btn--password"
+										type="button"
+										aria-label="Стереть содержимое формы"
+										@click="clearMailInput"
+									>
+										<svg
+											class="modal-input__clear-input-btn-icon"
+											xmlns="http://www.w3.org/2000/svg"
+											width="22"
+											height="22"
+											viewBox="0 0 32 32"
+										>
+											<path
+												d="M16 0C7.164 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0m0 30.032C8.28 30.032 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14.032-14 14.032m5.657-19.688a1 1 0 0 0-1.414 0l-4.242 4.242-4.242-4.242a1 1 0 1 0-1.415 1.414L14.586 16l-4.242 4.242a1 1 0 0 0 1.415 1.414l4.242-4.242 4.242 4.242a1 1 0 0 0 1.414-1.414L17.415 16l4.242-4.242a1 1 0 0 0 0-1.414"
+											/>
+										</svg>
+									</button>
 								</div>
 								<div class="modal-input">
 									<label for="name" class="modal-input__label">
@@ -78,6 +96,24 @@
 										required
 										autocomplete="given-name"
 									/>
+									<button
+										class="modal-input__clear-input-btn btn btn--password"
+										type="button"
+										aria-label="Стереть содержимое формы"
+										@click="clearNameInput"
+									>
+										<svg
+											class="modal-input__clear-input-btn-icon"
+											xmlns="http://www.w3.org/2000/svg"
+											width="22"
+											height="22"
+											viewBox="0 0 32 32"
+										>
+											<path
+												d="M16 0C7.164 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0m0 30.032C8.28 30.032 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14.032-14 14.032m5.657-19.688a1 1 0 0 0-1.414 0l-4.242 4.242-4.242-4.242a1 1 0 1 0-1.415 1.414L14.586 16l-4.242 4.242a1 1 0 0 0 1.415 1.414l4.242-4.242 4.242 4.242a1 1 0 0 0 1.414-1.414L17.415 16l4.242-4.242a1 1 0 0 0 0-1.414"
+											/>
+										</svg>
+									</button>
 								</div>
 								<div class="modal-input">
 									<label for="surname" class="modal-input__label">
@@ -106,6 +142,24 @@
 										required
 										autocomplete="family-name"
 									/>
+									<button
+										class="modal-input__clear-input-btn btn btn--password"
+										type="button"
+										aria-label="Стереть содержимое формы"
+										@click="clearSurnameInput"
+									>
+										<svg
+											class="modal-input__clear-input-btn-icon"
+											xmlns="http://www.w3.org/2000/svg"
+											width="22"
+											height="22"
+											viewBox="0 0 32 32"
+										>
+											<path
+												d="M16 0C7.164 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0m0 30.032C8.28 30.032 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14.032-14 14.032m5.657-19.688a1 1 0 0 0-1.414 0l-4.242 4.242-4.242-4.242a1 1 0 1 0-1.415 1.414L14.586 16l-4.242 4.242a1 1 0 0 0 1.415 1.414l4.242-4.242 4.242 4.242a1 1 0 0 0 1.414-1.414L17.415 16l4.242-4.242a1 1 0 0 0 0-1.414"
+											/>
+										</svg>
+									</button>
 								</div>
 								<div class="modal-input">
 									<label for="password" class="modal-input__label">
@@ -184,6 +238,24 @@
 										required
 										autocomplete="new-password"
 									/>
+									<button
+										class="modal-input__clear-input-btn btn btn--password"
+										type="button"
+										aria-label="Стереть содержимое формы"
+										@click="clearConfirmPasswordInput"
+									>
+										<svg
+											class="modal-input__clear-input-btn-icon"
+											xmlns="http://www.w3.org/2000/svg"
+											width="22"
+											height="22"
+											viewBox="0 0 32 32"
+										>
+											<path
+												d="M16 0C7.164 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0m0 30.032C8.28 30.032 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14.032-14 14.032m5.657-19.688a1 1 0 0 0-1.414 0l-4.242 4.242-4.242-4.242a1 1 0 1 0-1.415 1.414L14.586 16l-4.242 4.242a1 1 0 0 0 1.415 1.414l4.242-4.242 4.242 4.242a1 1 0 0 0 1.414-1.414L17.415 16l4.242-4.242a1 1 0 0 0 0-1.414"
+											/>
+										</svg>
+									</button>
 								</div>
 							</div>
 							<div class="modal__login-block" v-else>
@@ -213,6 +285,24 @@
 										required
 										autocomplete="email"
 									/>
+									<button
+										class="modal-input__clear-input-btn btn btn--password"
+										type="button"
+										aria-label="Стереть содержимое формы"
+										@click="clearMailInput"
+									>
+										<svg
+											class="modal-input__clear-input-btn-icon"
+											xmlns="http://www.w3.org/2000/svg"
+											width="22"
+											height="22"
+											viewBox="0 0 32 32"
+										>
+											<path
+												d="M16 0C7.164 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0m0 30.032C8.28 30.032 2 23.72 2 16S8.28 2 16 2s14 6.28 14 14-6.28 14.032-14 14.032m5.657-19.688a1 1 0 0 0-1.414 0l-4.242 4.242-4.242-4.242a1 1 0 1 0-1.415 1.414L14.586 16l-4.242 4.242a1 1 0 0 0 1.415 1.414l4.242-4.242 4.242 4.242a1 1 0 0 0 1.414-1.414L17.415 16l4.242-4.242a1 1 0 0 0 0-1.414"
+											/>
+										</svg>
+									</button>
 								</div>
 								<div class="modal-input">
 									<label for="password" class="modal-input__label">
@@ -327,6 +417,22 @@ const passwordInput = ref('')
 const confirmPassword = ref('')
 const nameInput = ref('')
 const surnameInput = ref('')
+
+const clearMailInput = () => {
+	emailInput.value = ''
+}
+
+const clearNameInput = () => {
+	nameInput.value = ''
+}
+
+const clearSurnameInput = () => {
+	surnameInput.value = ''
+}
+
+const clearConfirmPasswordInput = () => {
+	confirmPassword.value = ''
+}
 
 const errors = ref({
 	email: '',
@@ -630,7 +736,7 @@ onMounted(() => {
 		width: 100%;
 		border: 1px solid $blue-grey;
 		border-radius: 0.3rem;
-		padding: 0.2rem 0.2rem 0.2rem 1.5rem;
+		padding: 0.2rem 1.5rem 0.2rem 1.5rem;
 		color: $main;
 
 		transition: border-color $transition-300;
@@ -639,6 +745,42 @@ onMounted(() => {
 			font-size: $px-12;
 			line-height: 110%;
 		}
+
+		@media (max-width: 48rem) {
+			font-size: $px-14;
+
+			&::placeholder {
+				font-size: $px-10;
+			}
+		}
+
+		&:placeholder-shown {
+			+ #{$root}__clear-input-btn {
+				opacity: 0;
+			}
+		}
+	}
+
+	&__clear-input-btn {
+		position: absolute;
+		top: 48%;
+		transform: translateY(-50%);
+		right: 1.7%;
+		opacity: 1;
+		scale: 0.8;
+
+		transition: opacity $transition-300;
+
+		&:hover,
+		&:focus-visible {
+			#{$root}__clear-input-btn-icon {
+				animation: clearBtnRotate 0.5s ease-in infinite;
+			}
+		}
+	}
+
+	&__clear-input-btn-icon {
+		transition: transform $transition-300;
 	}
 
 	&__input--error {
@@ -668,5 +810,27 @@ onMounted(() => {
 .modal-fade-enter-to,
 .modal-fade-leave-from {
 	opacity: 1;
+}
+
+@keyframes clearBtnRotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	25% {
+		transform: rotate(20deg);
+	}
+
+	50% {
+		transform: rotate(0deg);
+	}
+
+	75% {
+		transform: rotate(20deg);
+	}
+
+	100% {
+		transform: rotate(0deg);
+	}
 }
 </style>

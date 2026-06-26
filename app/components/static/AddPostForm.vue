@@ -32,7 +32,7 @@
 					cols="33"
 					spellcheck="true"
 					v-model="postDescription"
-					placeholder="Текст поста"
+					placeholder="От 5 до 2000 символов"
 				></textarea>
 				<span class="add-post-form__error-text" v-if="postsStore.customError">{{
 					fieldErrors.description
@@ -85,6 +85,8 @@ const titleMessages = [
 	'Хммм...',
 	'Мысли?',
 ]
+
+// const isRendered = ref(false)
 
 const showRandomTitle = useState('add-post-form__title', () => {
 	const randomIndex = Number(Math.floor(Math.random() * titleMessages.length))
@@ -168,6 +170,9 @@ const submitForm = async () => {
 	overflow: hidden;
 	min-height: 18.75rem;
 	position: relative;
+	opacity: 0;
+
+	animation: formAppearance 3s ease-in-out 1s forwards;
 
 	&::before {
 		content: '';
@@ -201,6 +206,7 @@ const submitForm = async () => {
 		flex-direction: column;
 		gap: 0.5rem;
 		align-items: center;
+		margin-top: 1rem;
 	}
 
 	&__title {
@@ -281,7 +287,7 @@ const submitForm = async () => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			color: $black;
+			color: $main;
 		}
 	}
 }
@@ -304,8 +310,33 @@ const submitForm = async () => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			color: $black;
+			color: $main;
 		}
+	}
+}
+
+@keyframes formAppearance {
+	0% {
+		opacity: 0;
+		clip-path: ellipse(0% 0% at 0% 50%);
+	}
+
+	25% {
+		opacity: 1;
+		clip-path: ellipse(43% 100% at 0% 50%);
+	}
+
+	50% {
+		clip-path: ellipse(43% 100% at 50% 50%);
+	}
+
+	75% {
+		clip-path: ellipse(43% 100% at 100% 50%);
+	}
+
+	100% {
+		clip-path: ellipse(78% 100% at 51% 51%);
+		opacity: 1;
 	}
 }
 </style>

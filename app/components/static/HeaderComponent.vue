@@ -38,10 +38,11 @@
 						>Блог</NuxtLink
 					>
 					<NuxtLink
+						v-if="userStore.isAuthenticated"
 						class="header__link"
 						aria-label="Переход на страницу пользователя"
 						:to="profileTo"
-						>Профиль</NuxtLink
+						>Настройки</NuxtLink
 					>
 					<button
 						class="header__modal-menu btn btn--modal"
@@ -92,10 +93,11 @@
 							>Главная</NuxtLink
 						>
 						<NuxtLink
+							v-if="userStore.isAuthenticated"
 							class="header__link"
 							aria-label="Переход на страницу пользователя"
 							:to="profileTo"
-							>Профиль</NuxtLink
+							>Настройки</NuxtLink
 						>
 						<NuxtLink
 							class="header__link"
