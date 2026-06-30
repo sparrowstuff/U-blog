@@ -119,13 +119,16 @@ const goToPage = (page: number) => {
 	&__prev-page-btn,
 	&__current-page-btn,
 	&__next-page-btn {
-		border: 1px solid aqua;
+		// border: 1px solid aqua;
+		border: 1px solid var(--border);
 		padding: 0.62rem 0.62rem 0.62rem 0.62rem;
 		border-radius: 0.5rem;
 		font-size: 0.98rem;
+		color: var(--text);
 		transition:
 			background-color 0.3s ease-in,
-			scale 0.3s ease-in;
+			scale 0.3s ease-in,
+			color $transition-300;
 	}
 
 	&__prev-page-btn:disabled,
@@ -135,11 +138,15 @@ const goToPage = (page: number) => {
 	}
 
 	&__current-page-btn.active {
-		background-color: darkseagreen;
+		// background-color: darkseagreen;
+		background-color: var(--accent);
+		// color: $white;
+		color: var(--text-inverse);
 	}
 
 	.pagination button:hover {
-		background-color: aquamarine;
+		// background-color: aquamarine;
+		background-color: color-mix(in srgb, var(--accent) 85%, var(--surface));
 		scale: 1.1;
 	}
 }

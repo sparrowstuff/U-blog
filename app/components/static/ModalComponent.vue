@@ -612,12 +612,13 @@ onMounted(() => {
 	max-width: 27.25rem;
 	width: 100%;
 	min-height: 10rem;
-	border: 1px solid $blue-grey;
+	border: 1px solid var(--border);
 	border-radius: 0.5rem;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background-color: $green-deep;
+	background-color: var(--surface-elevated);
+	color: var(--text-on-surface);
 
 	position: absolute;
 	top: 20%;
@@ -637,7 +638,8 @@ onMounted(() => {
 		position: absolute;
 		top: 6%;
 		right: 2%;
-		color: $white;
+		// color: $white;
+		color: var(--text-on-surface);
 	}
 
 	&__wrapper {
@@ -662,6 +664,7 @@ onMounted(() => {
 		font-size: $px-24;
 		line-height: 110%;
 		font-weight: 700;
+		color: var(--text-on-surface);
 	}
 
 	&__registration-block,
@@ -675,6 +678,7 @@ onMounted(() => {
 
 	&__submit-btn {
 		width: 100%;
+		color: var(--text-btn);
 	}
 
 	&__auth-complete {
@@ -691,13 +695,15 @@ onMounted(() => {
 	}
 
 	&__global-error {
-		color: red;
+		// color: $red;
+		color: var(--danger);
 		font-size: $px-20;
 		text-align: center;
 	}
 
 	&__success {
 		font-size: $px-20;
+		color: var(--success);
 	}
 
 	&--active {
@@ -734,10 +740,11 @@ onMounted(() => {
 
 	&__input {
 		width: 100%;
-		border: 1px solid $blue-grey;
+		border: 1px solid var(--border);
 		border-radius: 0.3rem;
 		padding: 0.2rem 1.5rem 0.2rem 1.5rem;
-		color: $main;
+		color: var(--text-on-surface);
+		background-color: var(--surface);
 
 		transition: border-color $transition-300;
 
@@ -757,6 +764,8 @@ onMounted(() => {
 		&:placeholder-shown {
 			+ #{$root}__clear-input-btn {
 				opacity: 0;
+				pointer-events: none;
+				user-select: none;
 			}
 		}
 	}

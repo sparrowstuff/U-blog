@@ -99,10 +99,12 @@ const deleteThisComment = async () => {
 @import '@/assets/styles/global/variables';
 
 .comment {
-	color: $apple;
+	// color: $apple;
+	color: var(--accent);
 
 	&:nth-child(n) {
-		border-bottom: 1px solid $white;
+		// border-bottom: 1px solid $white;
+		border-bottom: 1px solid var(--border-soft);
 		padding-bottom: 0.5rem;
 	}
 
@@ -149,6 +151,7 @@ const deleteThisComment = async () => {
 	&__author-name {
 		font-size: $px-22;
 		font-weight: 600;
+		color: var(--text);
 
 		@media (max-width: 48rem) {
 			font-size: $px-18;
@@ -157,6 +160,7 @@ const deleteThisComment = async () => {
 
 	&__comment {
 		font-size: $px-18;
+		color: var(--text-muted);
 
 		@media (max-width: 48rem) {
 			font-size: $px-14;

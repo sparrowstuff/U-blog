@@ -120,6 +120,8 @@ import LikesMenu from './LikesMenu.vue'
 import { useCommentsStore } from '~/stores/commentsStore.js'
 import { usePostsStore } from '~/stores/postsStore.js'
 import { useUserStore } from '~/stores/userStore.js'
+import type { ReactionType } from '~/types/Reaction.js'
+import type { PublicPost } from '~/types/PublicPost.js'
 
 const route = useRoute()
 
@@ -127,27 +129,25 @@ const commentsStore = useCommentsStore()
 const postsStore = usePostsStore()
 const userStore = useUserStore()
 
-type ReactionType = 'like' | 'dislike' | null
-
-type PostCard = {
-	id: number
-	title: string
-	description: string
-	createdAt: string
-	likesCount?: number
-	dislikesCount?: number
-	userReaction?: ReactionType
-	user: {
-		id: number
-		name: string
-		surName: string
-		email: string
-		avatarUrl?: string
-	}
-}
+// type PostCard = {
+// 	id: number
+// 	title: string
+// 	description: string
+// 	createdAt: string
+// 	likesCount?: number
+// 	dislikesCount?: number
+// 	userReaction?: ReactionType
+// 	user: {
+// 		id: number
+// 		name: string
+// 		surName: string
+// 		email: string
+// 		avatarUrl?: string
+// 	}
+// }
 
 const props = defineProps<{
-	post: PostCard
+	post: PublicPost
 	showCommentsImmediately: boolean
 }>()
 
@@ -207,13 +207,16 @@ onMounted(async () => {
 
 .post-card {
 	padding: 0.62rem 0.62rem 0.62rem 0.62rem;
-	border: 1px solid $white;
+	// border: 1px solid $white;
+	border: 1px solid var(--border);
 	border-radius: 0.5rem;
 	min-height: 10rem;
+	// background: rgba(255, 255, 255, 0.08);
 	background: rgba(255, 255, 255, 0.08);
 	backdrop-filter: blur(20px) saturate(180%);
 	-webkit-backdrop-filter: blur(20px) saturate(180%);
-	box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+	// box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0.5rem 2rem var(--shadow);
 
 	&__wrapper {
 		width: 100%;
@@ -273,6 +276,8 @@ onMounted(async () => {
 	&__user-email {
 		font-weight: 600;
 		line-height: 110%;
+		// color: $text;
+		color: var(--text);
 	}
 
 	&__divide {
@@ -309,7 +314,8 @@ onMounted(async () => {
 			content: '';
 			width: 100%;
 			height: 1px;
-			background-color: $black;
+			// background-color: $black;
+			background-color: var(--border);
 			position: absolute;
 			top: -5%;
 			left: 0;
@@ -320,7 +326,8 @@ onMounted(async () => {
 			content: '';
 			width: 100%;
 			height: 1px;
-			background-color: $black;
+			// background-color: $black;
+			background-color: var(--border);
 			position: absolute;
 			bottom: -5%;
 			left: 0;
@@ -337,6 +344,7 @@ onMounted(async () => {
 		color: $white;
 		font-weight: 400;
 		line-height: 110%;
+		color: var(--text);
 	}
 
 	&__post-title {
@@ -390,7 +398,8 @@ onMounted(async () => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		background-color: $black;
+		// background-color: $black;
+		background-color: var(--surface-alt);
 		padding: 0.4rem 0.4rem 0.4rem 0.4rem;
 		border-radius: 0.4rem;
 	}

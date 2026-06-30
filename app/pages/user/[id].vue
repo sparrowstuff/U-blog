@@ -214,6 +214,7 @@ onMounted(async () => {
 		line-height: 110%;
 		letter-spacing: 0.02em;
 		text-align: center;
+		color: var(--text);
 
 		@media (max-width: 48rem) {
 			font-size: $px-22;
@@ -225,7 +226,8 @@ onMounted(async () => {
 		flex-direction: column;
 		gap: 1rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		border: 1px solid $white;
+		// border: 1px solid $white;
+		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 		width: 100%;
 
@@ -251,10 +253,12 @@ onMounted(async () => {
 		font-size: $px-20;
 		line-height: 110%;
 		letter-spacing: 0.01em;
-		color: $purple-deep;
+		// color: $purple-deep;
+		color: var(--accent);
 
 		b {
-			color: $white;
+			// color: $white;
+			color: var(--text);
 		}
 
 		@media (max-width: 25rem) {

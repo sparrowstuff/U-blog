@@ -156,10 +156,15 @@ const addDislike = async () => {
 	}
 
 	&__like {
+		#{$root}__like-icon path {
+			color: var(--accent);
+		}
+
 		&:hover,
 		&:focus-visible {
 			#{$root}__like-icon path {
-				stroke: $purple-deep;
+				// stroke: $purple-deep;
+				stroke: var(--accent);
 			}
 		}
 	}
@@ -172,18 +177,25 @@ const addDislike = async () => {
 	}
 
 	&__dislike {
+		#{$root}__like-icon path {
+			color: var(--danger);
+		}
+
 		&:hover,
 		&:focus-visible {
 			#{$root}__dislike-icon path {
-				stroke: $red;
+				// stroke: $red;
+				stroke: var(--danger);
 			}
 		}
 	}
 
 	&__dislike--active {
 		#{$root}__dislike-icon path {
-			fill: $red;
-			stroke: $red;
+			// fill: $red;
+			// stroke: $red;
+			fill: var(--danger);
+			stroke: var(--danger);
 		}
 	}
 
@@ -194,6 +206,8 @@ const addDislike = async () => {
 	}
 
 	&__dislike-icon {
+		color: var(--danger);
+
 		transition: fill $transition-300;
 	}
 

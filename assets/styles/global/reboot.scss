@@ -10,10 +10,13 @@
 html {
 	scroll-behavior: smooth;
 	// overflow-x: hidden;
+	background: var(--bg);
+	color-scheme: dark light;
 }
 
 body {
-	background-color: $green-deep;
+	// background-color: $green-deep;
+	background-color: var(--bg);
 	font-weight: 500;
 	display: flex;
 	flex-direction: column;
@@ -24,7 +27,8 @@ body {
 	padding: 0;
 	margin: unset;
 	flex-grow: 1;
-	color: $purple-deep;
+	// color: $purple-deep;
+	color: var(--text);
 }
 
 picture {
@@ -41,7 +45,8 @@ img {
 }
 
 a {
-	color: $white;
+	// color: $white;
+	color: var(--link);
 	text-decoration: none;
 	// font-family: $custom-font;
 	cursor: pointer;
@@ -59,6 +64,7 @@ h5,
 h6,
 p {
 	margin: 0;
+	transition: color $transition-300;
 }
 
 ul,

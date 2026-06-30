@@ -21,7 +21,8 @@
 		oklch(65% 0.2 calc(var(--hue) + 120deg))
 	);
 	animation: hue-spin 2s ease-in infinite;
-	color: $light-white;
+	// color: $light-white;
+	color: var(--text-inverse);
 	padding: 0.2rem 0.5rem;
 	z-index: 0;
 
@@ -33,14 +34,17 @@
 	&:hover,
 	&:focus-visible {
 		animation-play-state: paused;
-		border: 2px solid $black;
+		// border: 2px solid $black;
+		border: 2px solid var(--border);
 	}
 
 	&--transparent {
 		position: relative;
 		background: transparent;
-		color: $white;
-		border: 2px solid $white;
+		// color: $white;
+		color: var(--text);
+		// border: 2px solid $white;
+		border: 2px solid var(--border);
 		animation: none;
 		z-index: 0;
 		isolation: isolate;
@@ -63,8 +67,10 @@
 
 		&:hover,
 		&:focus-visible {
-			border-color: $white;
-			color: $white;
+			// border-color: $white;
+			border-color: var(--accent);
+			// color: $white;
+			color: var(--text);
 
 			&::before {
 				opacity: 1;
@@ -85,12 +91,13 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0.4rem;
-		border: 2px solid $black;
+		// border: 2px solid $black;
+		border: 2px solid var(--border);
 		background: transparent;
-		color: $white;
+		// color: $white;
+		color: var(--text);
 		animation: none;
 
-		// псевдоэлемент с градиентом
 		&::before {
 			content: '';
 			position: absolute;
@@ -108,7 +115,8 @@
 
 		&:hover,
 		&:focus-visible {
-			color: $white;
+			// color: $white;
+			color: var(--text);
 
 			&::before {
 				opacity: 1;
@@ -129,7 +137,6 @@
 		&:hover,
 		&:focus-visible {
 			border: unset;
-
 			scale: 1.2;
 		}
 	}

@@ -125,6 +125,7 @@ onMounted(async () => {
 
 	&__greeting {
 		font-weight: 400;
+		color: var(--text);
 
 		@media (max-width: 48rem) {
 			font-size: $px-22;
@@ -135,7 +136,8 @@ onMounted(async () => {
 	&__user-name {
 		font-size: $px-24;
 		font-weight: 600;
-		color: $apple;
+		// color: $apple;
+		color: var(--accent);
 
 		@media (max-width: 48rem) {
 			text-align: center;
@@ -164,7 +166,8 @@ onMounted(async () => {
 		font-size: $px-22;
 		line-height: 110%;
 		font-weight: 400;
-		color: $apple;
+		// color: $apple;
+		color: var(--accent);
 		text-align: right;
 	}
 

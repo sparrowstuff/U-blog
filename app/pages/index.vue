@@ -60,6 +60,7 @@ onMounted(() => {
 	&__title {
 		text-align: center;
 		margin-bottom: 1rem;
+		color: var(--text);
 
 		@media (max-width: 48rem) {
 			font-size: $px-22;
@@ -98,6 +99,7 @@ onMounted(() => {
 		line-height: 110%;
 		font-weight: 400;
 		text-align: left;
+		color: var(--text);
 
 		@media (max-width: 25rem) {
 			text-align: center;
@@ -110,6 +112,7 @@ onMounted(() => {
 		line-height: 110%;
 		font-weight: 400;
 		text-align: center;
+		color: var(--text-muted);
 
 		opacity: 0;
 		pointer-events: none;
@@ -118,13 +121,15 @@ onMounted(() => {
 	}
 
 	&__blog-link {
-		color: $apple;
+		// color: $apple;
+		color: var(--accent);
 
 		transition: color $transition-300;
 
 		&:hover,
 		&:focus-visible {
 			color: $blue;
+			color: var(--link);
 		}
 	}
 
@@ -133,6 +138,7 @@ onMounted(() => {
 		line-height: 110%;
 		font-weight: 300;
 		text-align: right;
+		color: var(--text-muted);
 
 		@media (max-width: 25rem) {
 			text-align: center;

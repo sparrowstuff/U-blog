@@ -44,6 +44,7 @@
 						:to="profileTo"
 						>Настройки</NuxtLink
 					>
+					<ThemeButton />
 					<button
 						class="header__modal-menu btn btn--modal"
 						type="button"
@@ -125,6 +126,7 @@
 								/>
 							</svg>
 						</button>
+						<ThemeButton />
 					</div>
 				</div>
 			</div>
@@ -137,6 +139,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useModalStore } from '@/stores/modalStore'
 import ModalComponent from './ModalComponent.vue'
+import ThemeButton from './ThemeButton.vue'
 import { useUserStore } from '~/stores/userStore'
 import { onClickOutside, type MaybeElementRef } from '@vueuse/core'
 
@@ -187,7 +190,8 @@ onUnmounted(() => {
 
 .header {
 	padding: 1.12rem 0;
-	border-bottom: 1px solid $primary;
+	// border-bottom: 1px solid $primary;
+	border-bottom: 1px solid var(--border);
 	position: relative;
 
 	&__wrapper {
@@ -223,6 +227,7 @@ onUnmounted(() => {
 		font-size: 1rem;
 		line-height: 110%;
 		// color: $black;
+		color: var(--menu-text);
 		user-select: none;
 
 		transition:
@@ -237,7 +242,8 @@ onUnmounted(() => {
 
 	&__link--disabled {
 		pointer-events: none;
-		color: $primary;
+		// color: $primary;
+		color: var(--text-muted);
 		opacity: 0.5;
 	}
 
@@ -246,9 +252,12 @@ onUnmounted(() => {
 	}
 
 	&__mobile-menu {
-		border: 1px solid $white;
+		// border: 1px solid $white;
+		border: 1px solid var(--border);
 		border-radius: 0.5rem;
-		background-color: $green-deep;
+		// background-color: $green-deep;
+		background-color: var(--menu-bg);
+		color: var(--menu-text);
 		padding: 1.12rem;
 		display: flex;
 		flex-direction: column;
@@ -283,7 +292,8 @@ onUnmounted(() => {
 		height: 2.5rem;
 
 		background-color: transparent;
-		border: 1px solid $black;
+		// border: 1px solid $black;
+		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 
 		transition: background-color $transition-300;
@@ -293,7 +303,8 @@ onUnmounted(() => {
 		&:hover,
 		&:focus-visible,
 		&:active {
-			background-color: $white;
+			// background-color: $white;
+			background-color: var(--surface);
 		}
 	}
 
@@ -304,7 +315,8 @@ onUnmounted(() => {
 		width: 70%;
 		height: 2px;
 		border-radius: 0.5rem;
-		background-color: $black;
+		// background-color: $black;
+		background-color: var(--text);
 		transition: all $transition-300;
 	}
 
@@ -346,7 +358,8 @@ onUnmounted(() => {
 
 .router-link-active {
 	// transition: color $transition-300;
-	color: $apple;
+	// color: $apple;
+	color: var(--accent);
 	pointer-events: none;
 }
 </style>

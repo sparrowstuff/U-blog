@@ -12,9 +12,10 @@
 					id="addPostTitle"
 					class="custom-input__input"
 					required
+					maxlength="100"
 					autocomplete="post-title"
 					v-model="postTitle"
-					placeholder="Заголовок поста"
+					placeholder="Заголовок поста - до 100 символов"
 				/>
 				<span class="add-post-form__error-text">{{ fieldErrors.title }}</span>
 			</div>
@@ -32,7 +33,7 @@
 					cols="33"
 					spellcheck="true"
 					v-model="postDescription"
-					placeholder="От 5 до 2000 символов"
+					placeholder="Текст поста - От 5 до 2000 символов"
 				></textarea>
 				<span class="add-post-form__error-text" v-if="postsStore.customError">{{
 					fieldErrors.description

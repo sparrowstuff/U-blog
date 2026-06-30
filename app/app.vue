@@ -7,8 +7,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useUserStore } from '~/stores/userStore'
+import { useThemeStore } from '~/stores/themeStore'
 
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 
 useHead({
 	title: 'You-Blog',
@@ -16,6 +18,8 @@ useHead({
 
 onMounted(async () => {
 	await userStore.fetchUser()
+
+	themeStore.initTheme()
 })
 
 // вместо onMounted - callOnce для однократного вызова
@@ -30,7 +34,8 @@ onMounted(async () => {
 
 .test {
 	&__title {
-		color: $primary;
+		// color: $primary;
+		color: var(--text-muted);
 	}
 }
 </style>
