@@ -664,7 +664,7 @@ onMounted(() => {
 		font-size: $px-24;
 		line-height: 110%;
 		font-weight: 700;
-		color: var(--text-on-surface);
+		color: var(--text);
 	}
 
 	&__registration-block,
@@ -678,7 +678,7 @@ onMounted(() => {
 
 	&__submit-btn {
 		width: 100%;
-		color: var(--text-btn);
+		// color: var(--btn-text);
 	}
 
 	&__auth-complete {

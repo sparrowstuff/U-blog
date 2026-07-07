@@ -22,7 +22,7 @@
 	);
 	animation: hue-spin 2s ease-in infinite;
 	// color: $light-white;
-	color: var(--text-inverse);
+	color: var(--btn-text);
 	padding: 0.2rem 0.5rem;
 	z-index: 0;
 
@@ -41,8 +41,8 @@
 	&--transparent {
 		position: relative;
 		background: transparent;
-		// color: $white;
-		color: var(--text);
+		// color: $black;
+		color: var(--btn-text);
 		// border: 2px solid $white;
 		border: 2px solid var(--border);
 		animation: none;
@@ -69,8 +69,8 @@
 		&:focus-visible {
 			// border-color: $white;
 			border-color: var(--accent);
-			// color: $white;
-			color: var(--text);
+			color: $white;
+			// color: var(--text);
 
 			&::before {
 				opacity: 1;
@@ -94,8 +94,8 @@
 		// border: 2px solid $black;
 		border: 2px solid var(--border);
 		background: transparent;
-		// color: $white;
-		color: var(--text);
+		color: $black;
+		// color: var(--text);
 		animation: none;
 
 		&::before {

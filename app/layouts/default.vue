@@ -1,25 +1,24 @@
 <template>
-	<HeaderComponent />
-	<slot />
+	<section class="default">
+		<HeaderComponent />
+		<slot />
+		<FooterComponent />
+	</section>
 </template>
 
 <script setup lang="ts">
 import HeaderComponent from '../components/static/HeaderComponent.vue'
+import FooterComponent from '../components/static/FooterComponent.vue'
 </script>
 
 <style scoped lang="scss">
 @import '../../assets/styles/global/variables';
 
-.hero {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	height: 100dvh;
-
-	&__wrapper {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		gap: 0.62rem;
-	}
+.default {
+	margin-top: unset;
+	margin-bottom: unset;
+	display: flex;
+	flex-direction: column;
+	min-height: 100dvh;
 }
 </style>

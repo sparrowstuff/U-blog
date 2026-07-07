@@ -42,7 +42,10 @@
 						class="header__link"
 						aria-label="Переход на страницу пользователя"
 						:to="profileTo"
-						>Настройки</NuxtLink
+						>Профиль</NuxtLink
+					>
+					<NuxtLink class="header__link" aria-label="О проекте" :to="'/about'"
+						>О проекте</NuxtLink
 					>
 					<ThemeButton />
 					<button
@@ -106,6 +109,9 @@
 							:to="'/blog'"
 							>Блог</NuxtLink
 						>
+						<NuxtLink class="header__link" aria-label="О проекте" :to="'/about'"
+							>О проекте</NuxtLink
+						>
 						<button
 							class="header__modal-menu btn btn--modal"
 							type="button"
@@ -150,7 +156,7 @@ const profileTo = computed(() => {
 	return userStore.user ? `/user/${userStore.user?.id}` : '/'
 })
 
-const isProfileAvailable = computed(() => !!userStore.user)
+// const isProfileAvailable = computed(() => !!userStore.user)
 
 const isDesktop = ref(true)
 const isBurgerOpened = ref(false)
@@ -229,6 +235,7 @@ onUnmounted(() => {
 		// color: $black;
 		color: var(--menu-text);
 		user-select: none;
+		text-align: center;
 
 		transition:
 			scale $transition-300,
@@ -265,6 +272,7 @@ onUnmounted(() => {
 		justify-content: center;
 		gap: 0.8rem;
 		z-index: 5;
+		min-width: 9rem;
 
 		transition:
 			opacity $transition-300,
@@ -296,15 +304,16 @@ onUnmounted(() => {
 		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 
-		transition: background-color $transition-300;
+		transition: scale $transition-300;
 
 		position: relative;
 
 		&:hover,
 		&:focus-visible,
-		&:active {
+		&:focus-within {
 			// background-color: $white;
-			background-color: var(--surface);
+			// background-color: var(--surface);
+			scale: 1.1;
 		}
 	}
 
