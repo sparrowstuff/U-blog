@@ -24,6 +24,8 @@
 			<AddPostForm />
 		</div>
 		<UpBtn />
+
+		<CookieBanner />
 	</section>
 </template>
 
@@ -34,6 +36,7 @@ import UpBtn from '../components/static/UpBtn.vue'
 import SidebarComponent from '../components/static/SidebarComponent.vue'
 import typeWriter from '@/utils/typeWriter.js'
 import AddPostForm from '../components/static/AddPostForm.vue'
+import CookieBanner from '../components/static/CookieBanner.vue'
 
 const typeWrittenMessage1 = ref('')
 const typeWrittenMessage2 = ref('')

@@ -379,7 +379,12 @@
 							}}</span>
 						</div>
 						<div class="modal__auth-complete" v-else>
-							<span class="modal__success">Вы уже авторизованы!</span>
+							<span class="modal__success"
+								>Вы уже авторизованы как
+								<b class="modal__success-name">{{
+									userStore.user?.name
+								}}</b></span
+							>
 							<button
 								class="modal__logout-btn btn btn--transparent"
 								type="button"
@@ -704,6 +709,10 @@ onMounted(() => {
 	&__success {
 		font-size: $px-20;
 		color: var(--success);
+	}
+
+	&__success-name {
+		color: var(--text);
 	}
 
 	&--active {

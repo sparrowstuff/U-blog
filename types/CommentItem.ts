@@ -1,3 +1,5 @@
+import type { CommentUser } from '@/types/CommentUser'
+
 export type CommentItem = {
 	id: number
 	content: string

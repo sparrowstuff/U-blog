@@ -40,9 +40,9 @@
 				}}</span>
 			</div>
 		</div>
-		<span class="add-post-form__global-error">{{
+		<!-- <span class="add-post-form__global-error">{{
 			postsStore.customError
-		}}</span>
+		}}</span> -->
 		<button
 			class="add-post-form__clear-btn btn btn--transparent"
 			type="button"
@@ -59,6 +59,10 @@
 		>
 			{{ postsStore.isLoading ? 'Сохранение...' : 'Создать пост' }}
 		</button>
+
+		<span class="add-post-form__user-error" v-if="fieldErrors.user">{{
+			fieldErrors.user
+		}}</span>
 
 		<span class="add-post-form__go-to-text" v-if="isPostSubmitted"
 			>Супер! Пост отправлен! Посмотреть в
@@ -105,6 +109,7 @@ const isPostSubmitted = ref(false)
 const fieldErrors = ref({
 	title: '',
 	description: '',
+	user: '',
 })
 
 const clearForm = () => {
@@ -116,7 +121,13 @@ const clearErrors = () => {
 	fieldErrors.value = {
 		title: '',
 		description: '',
+		user: '',
 	}
+}
+
+const clearFieldErrors = () => {
+	fieldErrors.value.title = ''
+	fieldErrors.value.description = ''
 }
 
 const validateForm = () => {
@@ -138,7 +149,15 @@ const validateForm = () => {
 }
 
 const submitForm = async () => {
-	if (!validateForm() || !userStore.user) return
+	clearErrors()
+
+	if (!userStore.user) {
+		fieldErrors.value.user = 'Необходимо войти в аккаунт!!!!'
+
+		return
+	}
+
+	if (!validateForm()) return
 
 	try {
 		await postsStore.addPost({
@@ -148,7 +167,7 @@ const submitForm = async () => {
 		})
 		;((postTitle.value = ''), (postDescription.value = ''))
 
-		clearErrors()
+		clearFieldErrors()
 		isPostSubmitted.value = true
 	} catch (err) {
 		console.error('Что-то пошло не так', err)
@@ -248,6 +267,13 @@ const submitForm = async () => {
 		&:focus-visible {
 			color: $black;
 		}
+	}
+
+	&__user-error {
+		z-index: 5;
+		color: $black;
+		font-weight: 600;
+		font-size: $px-20;
 	}
 }
 
