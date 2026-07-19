@@ -25,6 +25,7 @@
 	color: var(--btn-text);
 	padding: 0.2rem 0.5rem;
 	z-index: 0;
+	overflow: hidden;
 
 	transition:
 		filter $transition-300,
@@ -54,7 +55,7 @@
 			content: '';
 			position: absolute;
 			inset: 0;
-			border-radius: inherit;
+			// border-radius: inherit;
 			background: linear-gradient(
 				135deg,
 				oklch(65% 0.2 var(--hue)),
@@ -102,7 +103,7 @@
 			content: '';
 			position: absolute;
 			inset: 0;
-			border-radius: inherit;
+			// border-radius: inherit;
 			background: linear-gradient(
 				135deg,
 				oklch(65% 0.2 var(--hue)),

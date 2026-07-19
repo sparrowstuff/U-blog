@@ -15,7 +15,13 @@ const themeStore = useThemeStore()
 const cookieStore = useCookieStore()
 
 useHead({
-	title: 'You-Blog',
+	title: 'U-Blog',
+	meta: [
+		{
+			name: 'description',
+			content: `U-blog - write everything what's on your mind today`,
+		},
+	],
 })
 
 onMounted(async () => {

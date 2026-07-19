@@ -273,11 +273,12 @@ onUnmounted(() => {
 	padding: 1rem 1rem 1rem 1rem;
 	border: 1px solid var(--border);
 	border-radius: 0.62rem;
-	// background: $light-white;
 	background: var(--surface);
 	$root: &;
 
 	transition: width $transition-300;
+
+	animation: SidebarClipLeft 1s ease-in forwards;
 
 	&__logo {
 		// color: $black;
@@ -371,6 +372,8 @@ onUnmounted(() => {
 		min-height: unset;
 		width: 100%;
 
+		animation: SidebarClipDown 1s ease-in forwards;
+
 		#{$root}__open-btn {
 			opacity: 0;
 			pointer-events: none;
@@ -431,6 +434,26 @@ onUnmounted(() => {
 
 	to {
 		opacity: 1;
+	}
+}
+
+@keyframes SidebarClipLeft {
+	0% {
+		clip-path: polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%);
+	}
+
+	100% {
+		clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
+	}
+}
+
+@keyframes SidebarClipDown {
+	0% {
+		clip-path: polygon(0% 0%, 0% 0%, 100% 0%, 100% 0%);
+	}
+
+	100% {
+		clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
 	}
 }
 </style>

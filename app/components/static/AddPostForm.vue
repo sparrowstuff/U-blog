@@ -192,7 +192,7 @@ const submitForm = async () => {
 	position: relative;
 	opacity: 0;
 
-	animation: formAppearance 3s ease-in-out 1s forwards;
+	animation: formAppearance 3s ease-in-out 0.2s forwards;
 
 	&::before {
 		content: '';

@@ -104,9 +104,15 @@
 
 		@media (max-width: 37.5rem) {
 			flex-direction: column;
-			align-items: flex-start;
+			// align-items: flex-start;
 			justify-content: unset;
 		}
+	}
+
+	&__info {
+		opacity: 0;
+
+		animation: TextAppearanceLeft 1s ease-in forwards;
 	}
 }
 
@@ -120,6 +126,19 @@
 	@media (max-width: 37.5rem) {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+
+	&__item {
+		opacity: 0;
+		animation: LinkScrollDown 0.5s ease-in forwards;
+
+		&:nth-child(2) {
+			animation-delay: 0.3s;
+		}
+
+		&:nth-child(3) {
+			animation-delay: 0.6s;
+		}
 	}
 
 	&__link {
@@ -149,6 +168,30 @@
 		color: var(--text);
 
 		transition: color $transition-300;
+	}
+}
+
+@keyframes LinkScrollDown {
+	0% {
+		opacity: 0;
+		transform: translateY(-0.62rem);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes TextAppearanceLeft {
+	0% {
+		opacity: 0;
+		transform: translateX(-0.62rem);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0);
 	}
 }
 </style>

@@ -63,7 +63,19 @@
 	</section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useSeoMeta({
+	title: 'Правила площадки',
+	description: 'Правила использования сайта и поведения на платформе.',
+	ogTitle: 'Правила площадки',
+	ogDescription: 'Правила использования сайта и поведения на платформе.',
+	ogType: 'website',
+	twitterCard: 'summary_large_image',
+	twitterTitle: 'Правила площадки',
+	twitterDescription: 'Правила использования сайта и поведения на платформе.',
+	twitterImage: '/images/preview-terms.jpg',
+})
+</script>
 
 <style scoped lang="scss">
 @import '@/assets/styles/global/variables';

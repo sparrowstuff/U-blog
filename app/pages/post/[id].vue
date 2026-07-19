@@ -53,6 +53,14 @@ onMounted(async () => {
 		loading.value = false
 	}
 })
+
+useHead({
+	title: computed(
+		() =>
+			`Blog post Num. ${postsStore.currentPost?.id} by ${postsStore.currentPost?.user.name}`,
+	),
+	meta: [{ name: 'description', content: 'U-blog blog page' }],
+})
 </script>
 
 <style scoped lang="scss">

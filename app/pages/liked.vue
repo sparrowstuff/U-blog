@@ -99,6 +99,24 @@ onMounted(async () => {
 		isLoading.value = false
 	}
 })
+
+useSeoMeta({
+	title: computed(() =>
+		userStore.user ? `Избранное - ${userStore.user.name}` : 'Избранное',
+	),
+	description: 'Страница с понравившимися постами пользователя.',
+	ogTitle: computed(() =>
+		userStore.user ? `Избранное - ${userStore.user.name}` : 'Избранное',
+	),
+	ogDescription: 'Страница с понравившимися постами пользователя.',
+	ogType: 'website',
+	twitterCard: 'summary_large_image',
+	twitterTitle: computed(() =>
+		userStore.user ? `Избранное — ${userStore.user.name}` : 'Избранное',
+	),
+	twitterDescription: 'Страница с понравившимися постами пользователя.',
+	twitterImage: '/images/preview-liked.jpg',
+})
 </script>
 
 <style scoped lang="scss">

@@ -160,6 +160,18 @@
 
 <script setup lang="ts">
 import UpBtn from '../components/static/UpBtn.vue'
+
+useSeoMeta({
+	title: 'Политика конфиденциальности',
+	description: 'Политика обработки персональных данных и cookies.',
+	ogTitle: 'Политика конфиденциальности',
+	ogDescription: 'Политика обработки персональных данных и cookies.',
+	ogType: 'website',
+	twitterCard: 'summary_large_image',
+	twitterTitle: 'Политика конфиденциальности',
+	twitterDescription: 'Политика обработки персональных данных и cookies.',
+	twitterImage: '/images/preview-privacy.jpg',
+})
 </script>
 
 <style scoped lang="scss">

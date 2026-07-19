@@ -211,12 +211,16 @@ onUnmounted(() => {
 		display: flex;
 		align-items: center;
 		gap: 0.62rem;
+		opacity: 0;
+
+		animation: MenuScrollUp 1s ease-in-out forwards;
 	}
 
 	&__main-link {
 		display: flex;
 		align-items: center;
 		gap: 0.3rem;
+		opacity: 0;
 		transition:
 			scale $transition-300,
 			color $transition-300;
@@ -227,6 +231,8 @@ onUnmounted(() => {
 		}
 
 		font-family: $custom-font;
+
+		animation: MainLinkScrollUp 1s ease-in forwards;
 	}
 
 	&__link {
@@ -370,5 +376,28 @@ onUnmounted(() => {
 	// color: $apple;
 	color: var(--accent);
 	pointer-events: none;
+}
+
+@keyframes MainLinkScrollUp {
+	0% {
+		opacity: 0;
+		transform: translateY(0.62rem);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes MenuScrollUp {
+	0% {
+		opacity: 0;
+		transform: translateY(-0.62rem);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 </style>

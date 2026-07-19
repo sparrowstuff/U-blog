@@ -119,6 +119,12 @@ useHead({
 			? `${userStore.user.name} ${userStore.user.surName}`
 			: 'Профиль пользователя',
 	),
+	meta: [
+		{
+			name: 'description',
+			content: computed(() => `Profile page of ${userStore.user?.name}`),
+		},
+	],
 })
 
 definePageMeta({

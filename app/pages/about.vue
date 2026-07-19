@@ -1,7 +1,7 @@
 <template>
 	<section class="about">
 		<div class="container">
-			<h2 class="about__title">Данный проект реализован с помощью:</h2>
+			<h2 class="about__title">{{ typeWrittenMessage }}</h2>
 			<div
 				class="about__wrapper glow-block"
 				:style="glowStyle"
@@ -10,7 +10,7 @@
 				@pointerenter="onEnter"
 			>
 				<div class="glow-block__glow"></div>
-				<ul class="about-list blow-block__content">
+				<ul class="about-list glow-block__content">
 					<li class="about-list__item about-list__item--xxl">
 						<a href="https://nuxt.com/" target="blank" class="about-list__link">
 							<img
@@ -173,12 +173,32 @@
 					</li>
 				</ul>
 			</div>
+
+			<p class="about__learn-terms">
+				Для ознакомления с правилами площадки перейдите на
+				<NuxtLink
+					class="about__link"
+					:to="'/privacy'"
+					aria-label="Правила платформы"
+					>Правила приватности</NuxtLink
+				>
+				/
+				<NuxtLink
+					class="about__link"
+					:to="'/terms'"
+					aria-label="Правила площадки"
+					>Правила площадки</NuxtLink
+				>
+			</p>
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import typeWriter from '~/utils/typeWriter'
+
+const typeWrittenMessage = ref('')
 
 const x = ref(50)
 const y = ref(50)
@@ -206,6 +226,17 @@ const onEnter = () => {
 const onLeave = () => {
 	isVisible.value = false
 }
+
+useHead({
+	title: 'U-blog about page',
+	meta: [{ name: 'description', content: 'U-blog tech used page' }],
+})
+
+onMounted(() => {
+	typeWriter('Данный проект реализован с помощью:', value => {
+		typeWrittenMessage.value = value
+	})
+})
 </script>
 
 <style scoped lang="scss">
@@ -225,10 +256,36 @@ const onLeave = () => {
 		text-align: center;
 		color: var(--text);
 		margin-bottom: 1.12rem;
+		height: 2rem;
 
 		@media (max-width: 48rem) {
 			font-size: $px-22;
 			margin-bottom: 0.5rem;
+			height: 3rem;
+		}
+	}
+
+	&__learn-terms {
+		font-size: $px-20;
+		line-height: 110%;
+		text-align: center;
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+
+		@media (max-width: 37.5rem) {
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+			font-size: $px-16;
+		}
+	}
+
+	&__link {
+		transition: color $transition-300;
+
+		&:hover,
+		&:focus-visible,
+		&:focus-within {
+			color: $apple;
 		}
 	}
 }
@@ -239,14 +296,13 @@ const onLeave = () => {
 	gap: 1rem;
 
 	$root: &;
+	opacity: 0;
+
+	animation: LinksMenuAppearanceDown 1s ease-in 1s forwards;
 
 	@media (max-width: 40rem) {
 		grid-template-columns: repeat(2, 1fr);
 	}
-
-	// @media (max-width: 31.25rem) {
-	// 	grid-template-columns: 1fr;
-	// }
 
 	&__item {
 		height: 7rem;
@@ -257,17 +313,15 @@ const onLeave = () => {
 
 		transition: transform $transition-300;
 
-		&:hover,
-		&:focus-visible,
-		&:focus-within {
-			transform: translateY(-0.2rem);
+		&:hover .about-list__link-text,
+		&:focus-visible .about-list__link-text,
+		&:focus-within .about-list__link-text {
+			opacity: 1;
+			transform: translateY(0);
+		}
 
-			#{$root}__link-text {
-				// color: $black;
-
-				opacity: 1;
-				transform: translateY(0);
-			}
+		&:hover .about-list__image {
+			scale: 1.05;
 		}
 
 		&--xxl {
@@ -299,16 +353,15 @@ const onLeave = () => {
 		opacity: 0;
 		transform: translateY(1rem);
 
-		transition:
-			color $transition-300,
-			opacity $transition-300,
-			transform $transition-300;
-		// background-color $transition-300;
-
 		@media (max-width: 31.25rem) {
 			opacity: 1;
 			transform: translateY(0);
 		}
+
+		transition:
+			color $transition-300,
+			opacity $transition-300,
+			transform $transition-300;
 	}
 
 	&__image {
@@ -317,6 +370,7 @@ const onLeave = () => {
 		height: 100%;
 		object-fit: contain;
 		object-position: center;
+		transition: scale $transition-300;
 	}
 }
 
@@ -337,6 +391,18 @@ const onLeave = () => {
 			var(--mouse-move-second),
 			transparent 60%
 		);
+	}
+}
+
+@keyframes LinksMenuAppearanceDown {
+	0% {
+		opacity: 0;
+		clip-path: polygon(0% 0%, 0% 0%, 100% 0%, 100% 0%);
+	}
+
+	100% {
+		opacity: 1;
+		clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%);
 	}
 }
 </style>

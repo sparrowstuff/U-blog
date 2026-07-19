@@ -11,7 +11,7 @@
 						aria-label="Написать пост"
 						@click="isPosting = !isPosting"
 					>
-						Написать пост
+						{{ isPosting ? 'Отменить написание поста' : 'Написать пост' }}
 					</button>
 					<AddPostForm v-if="isPosting" />
 				</div>
@@ -84,6 +84,19 @@ onMounted(async () => {
 	} finally {
 		loading.value = false
 	}
+})
+
+useSeoMeta({
+  title: 'Блог',
+  description: 'Лента публикаций и постов пользователей.',
+  ogTitle: 'Блог',
+  ogDescription: 'Лента публикаций и постов пользователей.',
+  ogType: 'website',
+  ogImage: '/images/preview-blog.jpg',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Блог',
+  twitterDescription: 'Лента публикаций и постов пользователей.',
+  twitterImage: '/images/preview-blog.jpg',
 })
 </script>
 

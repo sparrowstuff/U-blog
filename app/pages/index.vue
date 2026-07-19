@@ -24,8 +24,6 @@
 			<AddPostForm />
 		</div>
 		<UpBtn />
-
-		<CookieBanner />
 	</section>
 </template>
 
@@ -36,7 +34,6 @@ import UpBtn from '../components/static/UpBtn.vue'
 import SidebarComponent from '../components/static/SidebarComponent.vue'
 import typeWriter from '@/utils/typeWriter.js'
 import AddPostForm from '../components/static/AddPostForm.vue'
-import CookieBanner from '../components/static/CookieBanner.vue'
 
 const typeWrittenMessage1 = ref('')
 const typeWrittenMessage2 = ref('')
@@ -51,6 +48,18 @@ onMounted(() => {
 			typeWrittenMessage2.value = value
 		})
 	}, 2)
+})
+
+useSeoMeta({
+	title: 'U-blog',
+	description: 'Платформа для публикации и чтения постов.',
+	ogTitle: 'U-blog',
+	ogDescription: 'Платформа для публикации и чтения постов.',
+	ogType: 'website',
+	twitterCard: 'summary_large_image',
+	twitterTitle: 'U-blog',
+	twitterDescription: 'Платформа для публикации и чтения постов.',
+	twitterImage: '/images/preview-home.jpg',
 })
 </script>
 
