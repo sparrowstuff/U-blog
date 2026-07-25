@@ -142,11 +142,9 @@ const cancelTexting = () => {
 
 	&__textarea {
 		width: 100%;
-		// border: 1px solid $blue-grey;
 		border: 1px solid var(--border);
 		border-radius: 0.3rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		// color: $white;
 		color: var(--text);
 		background-color: transparent;
 		field-sizing: content;
@@ -156,7 +154,6 @@ const cancelTexting = () => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			// color: $white;
 			color: var(--text-muted);
 		}
 	}

@@ -106,8 +106,6 @@ const isDisliked = computed(() => props.userReaction === 'dislike')
 const isLoading = computed(() => postsStore.isLoading)
 
 const addLike = async () => {
-	// await postsStore.toggleReaction(props.postId, 'like')
-
 	const res = await postsStore.toggleReaction(props.postId, 'like')
 
 	postsStore.updatePostReaction(
@@ -123,8 +121,6 @@ const addLike = async () => {
 }
 
 const addDislike = async () => {
-	// await postsStore.toggleReaction(props.postId, 'dislike')
-
 	const res = await postsStore.toggleReaction(props.postId, 'dislike')
 
 	postsStore.updatePostReaction(
@@ -163,7 +159,6 @@ const addDislike = async () => {
 		&:hover,
 		&:focus-visible {
 			#{$root}__like-icon path {
-				// stroke: $purple-deep;
 				stroke: var(--accent);
 			}
 		}
@@ -184,7 +179,6 @@ const addDislike = async () => {
 		&:hover,
 		&:focus-visible {
 			#{$root}__dislike-icon path {
-				// stroke: $red;
 				stroke: var(--danger);
 			}
 		}
@@ -192,8 +186,6 @@ const addDislike = async () => {
 
 	&__dislike--active {
 		#{$root}__dislike-icon path {
-			// fill: $red;
-			// stroke: $red;
 			fill: var(--danger);
 			stroke: var(--danger);
 		}

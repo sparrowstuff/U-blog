@@ -129,23 +129,6 @@ const commentsStore = useCommentsStore()
 const postsStore = usePostsStore()
 const userStore = useUserStore()
 
-// type PostCard = {
-// 	id: number
-// 	title: string
-// 	description: string
-// 	createdAt: string
-// 	likesCount?: number
-// 	dislikesCount?: number
-// 	userReaction?: ReactionType
-// 	user: {
-// 		id: number
-// 		name: string
-// 		surName: string
-// 		email: string
-// 		avatarUrl?: string
-// 	}
-// }
-
 const props = defineProps<{
 	post: PublicPost
 	showCommentsImmediately: boolean
@@ -207,16 +190,18 @@ onMounted(async () => {
 
 .post-card {
 	padding: 0.62rem 0.62rem 0.62rem 0.62rem;
-	// border: 1px solid $white;
 	border: 1px solid var(--border);
 	border-radius: 0.5rem;
 	min-height: 10rem;
-	// background: rgba(255, 255, 255, 0.08);
 	background: rgba(255, 255, 255, 0.08);
 	backdrop-filter: blur(20px) saturate(180%);
 	-webkit-backdrop-filter: blur(20px) saturate(180%);
-	// box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
-	box-shadow: 0 0.5rem 2rem var(--shadow);
+
+	transition: box-shadow $transition-300;
+
+	&:hover {
+		box-shadow: 0 0.5rem 1rem var(--shadow);
+	}
 
 	&__wrapper {
 		width: 100%;
@@ -276,7 +261,6 @@ onMounted(async () => {
 	&__user-email {
 		font-weight: 600;
 		line-height: 110%;
-		// color: $text;
 		color: var(--text);
 	}
 
@@ -314,7 +298,6 @@ onMounted(async () => {
 			content: '';
 			width: 100%;
 			height: 1px;
-			// background-color: $black;
 			background-color: var(--border);
 			position: absolute;
 			top: -5%;
@@ -326,7 +309,6 @@ onMounted(async () => {
 			content: '';
 			width: 100%;
 			height: 1px;
-			// background-color: $black;
 			background-color: var(--border);
 			position: absolute;
 			bottom: -5%;
@@ -354,10 +336,6 @@ onMounted(async () => {
 			font-size: $px-20;
 		}
 	}
-
-	// &__post-description {
-	// 	font-size: $px-14;
-	// }
 
 	&__commentary-block {
 		display: flex;
@@ -398,7 +376,6 @@ onMounted(async () => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		// background-color: $black;
 		background-color: var(--surface-alt);
 		padding: 0.4rem 0.4rem 0.4rem 0.4rem;
 		border-radius: 0.4rem;

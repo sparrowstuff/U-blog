@@ -1,7 +1,6 @@
 <template>
 	<section class="hero">
 		<div class="container">
-			<!-- <h1 class="hero__title">Hello bloggers</h1> -->
 			<div class="hero__main">
 				<SidebarComponent />
 				<div class="hero__wrapper">
@@ -133,7 +132,6 @@ useSeoMeta({
 	}
 
 	&__blog-link {
-		// color: $apple;
 		color: var(--accent);
 
 		transition: color $transition-300;

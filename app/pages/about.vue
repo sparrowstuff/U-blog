@@ -233,9 +233,13 @@ useHead({
 })
 
 onMounted(() => {
-	typeWriter('Данный проект реализован с помощью:', value => {
-		typeWrittenMessage.value = value
-	})
+	typeWriter(
+		'Данный проект реализован с помощью:',
+		value => {
+			typeWrittenMessage.value = value
+		},
+		40,
+	)
 })
 </script>
 

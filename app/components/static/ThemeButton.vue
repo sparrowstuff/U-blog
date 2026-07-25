@@ -49,15 +49,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useThemeStore } from '@/stores/themeStore'
 
 const themeStore = useThemeStore()
-// const isThemeDark = ref(false)
 
 const switchTheme = () => {
 	themeStore.toggleTheme()
-	// isThemeDark.value = !isThemeDark.value
 }
 </script>
 
@@ -74,6 +71,7 @@ const switchTheme = () => {
 	gap: 0.2rem;
 	$root: &;
 	padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+	background-color: var(--bg-theme-btn);
 
 	&__light,
 	&__dark {
@@ -101,8 +99,6 @@ const switchTheme = () => {
 	}
 
 	&--dark {
-		// background: var(--light);
-
 		#{$root}__light-icon {
 			opacity: 0;
 			transform: translateX(0.62rem);

@@ -643,7 +643,6 @@ onMounted(() => {
 		position: absolute;
 		top: 6%;
 		right: 2%;
-		// color: $white;
 		color: var(--text-on-surface);
 	}
 
@@ -683,7 +682,6 @@ onMounted(() => {
 
 	&__submit-btn {
 		width: 100%;
-		// color: var(--btn-text);
 	}
 
 	&__auth-complete {
@@ -700,7 +698,6 @@ onMounted(() => {
 	}
 
 	&__global-error {
-		// color: $red;
 		color: var(--danger);
 		font-size: $px-20;
 		text-align: center;

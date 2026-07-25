@@ -99,11 +99,9 @@ const deleteThisComment = async () => {
 @import '@/assets/styles/global/variables';
 
 .comment {
-	// color: $apple;
 	color: var(--accent);
 
 	&:nth-child(n) {
-		// border-bottom: 1px solid $white;
 		border-bottom: 1px solid var(--border-soft);
 		padding-bottom: 0.5rem;
 	}

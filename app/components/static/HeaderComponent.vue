@@ -22,7 +22,7 @@
 						<circle cx="16.5" cy="6.5" fill="currentColor" r="0.5" />
 						<circle cx="18.5" cy="6.5" fill="currentColor" r="0.5" />
 					</svg>
-					<span class="header__main-link-text">Blog App</span>
+					<span class="header__main-link-text">U-blog</span>
 				</NuxtLink>
 				<div class="header__desktop" v-if="isDesktop">
 					<NuxtLink
@@ -155,8 +155,6 @@ const userStore = useUserStore()
 const profileTo = computed(() => {
 	return userStore.user ? `/user/${userStore.user?.id}` : '/'
 })
-
-// const isProfileAvailable = computed(() => !!userStore.user)
 
 const isDesktop = ref(true)
 const isBurgerOpened = ref(false)

@@ -40,9 +40,6 @@
 				}}</span>
 			</div>
 		</div>
-		<!-- <span class="add-post-form__global-error">{{
-			postsStore.customError
-		}}</span> -->
 		<button
 			class="add-post-form__clear-btn btn btn--transparent"
 			type="button"
@@ -79,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { usePostsStore } from '@/stores/postsStore'
 import { useUserStore } from '@/stores/userStore'
 
@@ -90,8 +87,6 @@ const titleMessages = [
 	'Хммм...',
 	'Мысли?',
 ]
-
-// const isRendered = ref(false)
 
 const showRandomTitle = useState('add-post-form__title', () => {
 	const randomIndex = Number(Math.floor(Math.random() * titleMessages.length))

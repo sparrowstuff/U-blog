@@ -44,7 +44,6 @@ onMounted(async () => {
 
 .test {
 	&__title {
-		// color: $primary;
 		color: var(--text-muted);
 	}
 }

@@ -281,7 +281,6 @@ onUnmounted(() => {
 	animation: SidebarClipLeft 1s ease-in forwards;
 
 	&__logo {
-		// color: $black;
 		color: var(--text);
 	}
 
@@ -301,7 +300,6 @@ onUnmounted(() => {
 	&__open-btn {
 		font-size: $px-18;
 		font-weight: 400;
-		// color: $black;
 		color: var(--link);
 		display: flex;
 		align-items: center;
@@ -332,7 +330,6 @@ onUnmounted(() => {
 
 	&__login-btn,
 	&__logout-btn {
-		// color: $black;
 		color: var(--link);
 		max-height: 2.35rem;
 		height: 100%;
@@ -422,7 +419,6 @@ onUnmounted(() => {
 
 .router-link-active {
 	transition: all $transition-300;
-	// color: $primary;
 	color: var(--accent);
 	pointer-events: none;
 }

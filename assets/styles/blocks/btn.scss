@@ -21,7 +21,6 @@
 		oklch(65% 0.2 calc(var(--hue) + 120deg))
 	);
 	animation: hue-spin 2s ease-in infinite;
-	// color: $light-white;
 	color: var(--btn-text);
 	padding: 0.2rem 0.5rem;
 	z-index: 0;
@@ -35,16 +34,13 @@
 	&:hover,
 	&:focus-visible {
 		animation-play-state: paused;
-		// border: 2px solid $black;
 		border: 2px solid var(--border);
 	}
 
 	&--transparent {
 		position: relative;
 		background: transparent;
-		// color: $black;
 		color: var(--btn-text);
-		// border: 2px solid $white;
 		border: 2px solid var(--border);
 		animation: none;
 		z-index: 0;
@@ -55,7 +51,6 @@
 			content: '';
 			position: absolute;
 			inset: 0;
-			// border-radius: inherit;
 			background: linear-gradient(
 				135deg,
 				oklch(65% 0.2 var(--hue)),
@@ -68,10 +63,8 @@
 
 		&:hover,
 		&:focus-visible {
-			// border-color: $white;
 			border-color: var(--accent);
 			color: $white;
-			// color: var(--text);
 
 			&::before {
 				opacity: 1;
@@ -92,18 +85,14 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0.4rem;
-		// border: 2px solid $black;
-		border: 2px solid var(--border);
 		background: transparent;
-		color: $black;
-		// color: var(--text);
+		color: var(--text);
 		animation: none;
 
 		&::before {
 			content: '';
 			position: absolute;
 			inset: 0;
-			// border-radius: inherit;
 			background: linear-gradient(
 				135deg,
 				oklch(65% 0.2 var(--hue)),
@@ -116,7 +105,6 @@
 
 		&:hover,
 		&:focus-visible {
-			// color: $white;
 			color: var(--text);
 
 			&::before {

@@ -127,7 +127,6 @@ const validateForm = () => {
 }
 
 const updateUser = async (userId: number) => {
-	// if (!validateForm()) return
 	if (!userId || Number.isNaN(userId)) return
 
 	const hasName = !!userName.value.trim()
@@ -173,10 +172,8 @@ onBeforeUnmount(() => {
 	width: 100%;
 	$root: &;
 	padding: 0.62rem 0.62rem 0.62rem 0.62rem;
-	// border: 1px solid $primary;
 	border: 1px solid var(--border);
 	border-radius: 0.5rem;
-	// background: $black;
 	background: var(--surface);
 
 	display: flex;
@@ -221,7 +218,6 @@ onBeforeUnmount(() => {
 		&:hover,
 		&:focus-within {
 			#{$root}__label {
-				// color: $white;
 				color: var(--text);
 			}
 		}
@@ -243,11 +239,9 @@ onBeforeUnmount(() => {
 
 	&__input {
 		width: 100%;
-		// border: 1px solid $blue-grey;
 		border: 1px solid var(--border);
 		border-radius: 0.3rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		// color: $white;
 		color: var(--text);
 		background-color: transparent;
 
@@ -256,7 +250,6 @@ onBeforeUnmount(() => {
 		&::placeholder {
 			font-size: $px-14;
 			line-height: 110%;
-			// color: $white;
 			color: var(--text-muted);
 		}
 	}
@@ -275,7 +268,6 @@ onBeforeUnmount(() => {
 		border-radius: 50%;
 		object-fit: cover;
 		object-position: center;
-		// border: 1px solid $blue-grey;
 		border: 1px solid var(--border);
 		overflow: hidden;
 		display: block;

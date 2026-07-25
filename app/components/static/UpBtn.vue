@@ -1,8 +1,8 @@
 <template>
 	<ClientOnly>
 		<button
-			v-show="isDownScroll"
 			class="up-btn btn btn--up"
+			:class="{ 'up-btn--active': isDownScroll }"
 			aria-label="Подняться наверх"
 			type="button"
 			@click="scrollToTop"
@@ -79,7 +79,17 @@ onUnmounted(() => {
 
 .up-btn {
 	position: fixed;
-	bottom: 3%;
+	bottom: 5%;
 	right: 2%;
+	opacity: 0;
+	transform: translateY(0.62rem);
+	transition:
+		opacity $transition-300,
+		transform $transition-300;
+
+	&--active {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 </style>

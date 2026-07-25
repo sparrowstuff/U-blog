@@ -41,7 +41,7 @@
 						>
 							<path
 								d="M4 21V18.5C4 15.4624 6.46243 13 9.5 13H12.8513C15.307 13 17.4651 11.3721 18.1397 9.01097L18.7454 6.89097C18.8961 6.3636 19.3781 6 19.9266 6C20.7258 6 21.3122 6.75106 21.1184 7.5264L19.3638 14.5448C19.15 15.4 18.3816 16 17.5 16M8 21V18M16 6.5C16 8.70914 14.2091 10.5 12 10.5C9.79086 10.5 8 8.70914 8 6.5C8 4.29086 9.79086 2.5 12 2.5C14.2091 2.5 16 4.29086 16 6.5Z"
-								stroke="#000000"
+								stroke="currentColor"
 								stroke-linecap="round"
 								stroke-width="1.4"
 							/>
@@ -232,7 +232,6 @@ onMounted(async () => {
 		flex-direction: column;
 		gap: 1rem;
 		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-		// border: 1px solid $white;
 		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 		width: 100%;
@@ -259,11 +258,9 @@ onMounted(async () => {
 		font-size: $px-20;
 		line-height: 110%;
 		letter-spacing: 0.01em;
-		// color: $purple-deep;
 		color: var(--accent);
 
 		b {
-			// color: $white;
 			color: var(--text);
 		}
 
@@ -299,6 +296,7 @@ onMounted(async () => {
 		position: absolute;
 		bottom: 2%;
 		right: 2%;
+		color: var(--text);
 
 		width: 4rem;
 		height: 4rem;

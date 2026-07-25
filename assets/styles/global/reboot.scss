@@ -4,18 +4,17 @@
 *::after,
 *::before {
 	box-sizing: border-box;
-	// outline: 4px solid black;
+	// outline: 4px solid black; // for debugging
 }
 
 html {
 	scroll-behavior: smooth;
-	// overflow-x: hidden;
+	// overflow-x: hidden; // if scroll appears on mobiles
 	background: var(--bg);
 	color-scheme: dark light;
 }
 
 body {
-	// background-color: $green-deep;
 	background-color: var(--bg);
 	font-weight: 500;
 	display: flex;
@@ -24,11 +23,9 @@ body {
 	min-height: 100vh;
 	max-width: 100vw;
 	height: 100dvh;
-	// min-height: 100dvh;
 	padding: 0;
 	margin: unset;
 	flex-grow: 1;
-	// color: $purple-deep;
 	color: var(--text);
 }
 
@@ -46,10 +43,8 @@ img {
 }
 
 a {
-	// color: $white;
 	color: var(--link);
 	text-decoration: none;
-	// font-family: $custom-font;
 	cursor: pointer;
 }
 
