@@ -10,7 +10,15 @@
 				@pointerenter="onEnter"
 			>
 				<div class="glow-block__glow"></div>
-				<ul class="about-list glow-block__content">
+				<div class="about-list glow-block__content">
+					<TechnologyCard3D
+						v-for="tech in technologies"
+						:key="tech.id"
+						:card="tech"
+					>
+					</TechnologyCard3D>
+				</div>
+				<!-- <ul class="about-list glow-block__content">
 					<li class="about-list__item about-list__item--xxl">
 						<a href="https://nuxt.com/" target="blank" class="about-list__link">
 							<img
@@ -171,7 +179,7 @@
 							<span class="about-list__link-text">Zod</span></a
 						>
 					</li>
-				</ul>
+				</ul> -->
 			</div>
 
 			<p class="about__learn-terms">
@@ -197,6 +205,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import typeWriter from '~/utils/typeWriter'
+import technologies from '@/app/data/technologies.ts'
+import TechnologyCard3D from '@/app/components/static/TechnologyCard3D.client.vue'
 
 const typeWrittenMessage = ref('')
 
@@ -298,6 +308,7 @@ onMounted(() => {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 1rem;
+	padding: 0.3rem;
 
 	$root: &;
 	opacity: 0;
@@ -308,74 +319,74 @@ onMounted(() => {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	&__item {
-		height: 7rem;
-		position: relative;
-		overflow: hidden;
-		border-radius: 0.5rem;
-		border: 1px solid var(--border);
+	// &__item {
+	// 	height: 7rem;
+	// 	position: relative;
+	// 	overflow: hidden;
+	// 	border-radius: 0.5rem;
+	// 	border: 1px solid var(--border);
 
-		transition: transform $transition-300;
+	// 	transition: transform $transition-300;
 
-		&:hover .about-list__link-text,
-		&:focus-visible .about-list__link-text,
-		&:focus-within .about-list__link-text {
-			opacity: 1;
-			transform: translateY(0);
-		}
+	// 	&:hover .about-list__link-text,
+	// 	&:focus-visible .about-list__link-text,
+	// 	&:focus-within .about-list__link-text {
+	// 		opacity: 1;
+	// 		transform: translateY(0);
+	// 	}
 
-		&:hover .about-list__image {
-			scale: 1.05;
-		}
+	// 	&:hover .about-list__image {
+	// 		scale: 1.05;
+	// 	}
 
-		&--xxl {
-			grid-column: span 2;
+	// 	&--xxl {
+	// 		grid-column: span 2;
 
-			@media (max-width: 31.25rem) {
-				grid-column: unset;
-			}
-		}
-	}
+	// 		@media (max-width: 31.25rem) {
+	// 			grid-column: unset;
+	// 		}
+	// 	}
+	// }
 
-	&__link {
-		width: 100%;
-		height: 100%;
-	}
+	// &__link {
+	// 	width: 100%;
+	// 	height: 100%;
+	// }
 
-	&__link-text {
-		position: absolute;
-		bottom: 4%;
-		right: 2%;
-		display: block;
-		width: fit-content;
-		background-color: $white-grey;
-		color: $purple-deep;
-		border-radius: 0.25rem;
-		padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-		font-size: $px-22;
-		line-height: 110%;
-		opacity: 0;
-		transform: translateY(1rem);
+	// &__link-text {
+	// 	position: absolute;
+	// 	bottom: 4%;
+	// 	right: 2%;
+	// 	display: block;
+	// 	width: fit-content;
+	// 	background-color: $white-grey;
+	// 	color: $purple-deep;
+	// 	border-radius: 0.25rem;
+	// 	padding: 0.2rem 0.2rem 0.2rem 0.2rem;
+	// 	font-size: $px-22;
+	// 	line-height: 110%;
+	// 	opacity: 0;
+	// 	transform: translateY(1rem);
 
-		@media (max-width: 31.25rem) {
-			opacity: 1;
-			transform: translateY(0);
-		}
+	// 	@media (max-width: 31.25rem) {
+	// 		opacity: 1;
+	// 		transform: translateY(0);
+	// 	}
 
-		transition:
-			color $transition-300,
-			opacity $transition-300,
-			transform $transition-300;
-	}
+	// 	transition:
+	// 		color $transition-300,
+	// 		opacity $transition-300,
+	// 		transform $transition-300;
+	// }
 
-	&__image {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		object-position: center;
-		transition: scale $transition-300;
-	}
+	// &__image {
+	// 	display: block;
+	// 	width: 100%;
+	// 	height: 100%;
+	// 	object-fit: contain;
+	// 	object-position: center;
+	// 	transition: scale $transition-300;
+	// }
 }
 
 .glow-block {

@@ -1,15 +1,21 @@
 import prisma from '~/server/utils/database'
+import { requireUserId } from '~/server/utils/auth'
 import { z } from 'zod'
 
+// const postSchema = z.object({
+// 	title: z.string().min(1, 'Введите заголовок'),
+// 	description: z.string().min(5, 'Введите пост'),
+// 	// userId: z.number().int().positive(),
+// })
+
 const postSchema = z.object({
-	title: z.string().min(1, 'Введите заголовок'),
-	description: z.string().min(5, 'Введите пост'),
-	userId: z.number().int().positive(),
+	title: z.string().trim().min(1, 'Введите заголовок'),
+	description: z.string().trim().min(5, 'Введите пост'),
 })
 
 export default defineEventHandler(async event => {
+	const userId = await requireUserId(event)
 	const body = await readBody(event)
-
 	const parsed = postSchema.safeParse(body)
 
 	if (!parsed.success) {
@@ -27,29 +33,11 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const { title, description, userId } = parsed.data
-
-	const user = await prisma.user.findUnique({
-		where: { id: userId },
-		select: { id: true },
-	})
-
-	if (!user) {
-		throw createError({
-			statusCode: 404,
-			statusMessage: 'User not found',
-		})
-	}
-
-	const post = await prisma.post.create({
+	return prisma.post.create({
 		data: {
-			title,
-			description,
-			user: {
-				connect: {
-					id: userId,
-				},
-			},
+			title: parsed.data.title,
+			description: parsed.data.description,
+			userId,
 		},
 		include: {
 			user: {
@@ -58,10 +46,9 @@ export default defineEventHandler(async event => {
 					name: true,
 					surName: true,
 					email: true,
+					avatarUrl: true,
 				},
 			},
 		},
 	})
-
-	return post
 })

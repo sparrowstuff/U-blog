@@ -56,7 +56,7 @@ export const usePostsStore = defineStore('posts', () => {
 	const addPost = async (payload: {
 		title: string
 		description: string
-		userId: number
+		// userId: number
 	}) => {
 		isLoading.value = true
 		customError.value = null
@@ -67,7 +67,7 @@ export const usePostsStore = defineStore('posts', () => {
 				body: payload,
 			})
 
-			await fetchUserPosts(payload.userId)
+			await fetchPosts()
 		} catch (e: any) {
 			customError.value = e?.data?.statusMessage || 'Ошибка создания поста'
 			throw e
@@ -114,7 +114,7 @@ export const usePostsStore = defineStore('posts', () => {
 		await fetchLikedByUserPosts(userId)
 	}
 
-	const deletePost = async (postId: number, userId: number) => {
+	const deletePost = async (postId: number) => {
 		isLoading.value = true
 		customError.value = null
 
@@ -124,7 +124,6 @@ export const usePostsStore = defineStore('posts', () => {
 
 			await $fetch(`/api/posts/${postId}`, {
 				method: 'DELETE',
-				body: { userId },
 			})
 
 			posts.value = posts.value.filter(post => post.id !== postId)
@@ -205,6 +204,21 @@ export const usePostsStore = defineStore('posts', () => {
 		customError.value = null
 	}
 
+	const updateUserAvatar = (userId: number, avatarUrl: string) => {
+		const applyAvatar = (post: PublicPost) => {
+			if (post.user.id === userId) {
+				post.user.avatarUrl = avatarUrl
+			}
+		}
+
+		posts.value.forEach(applyAvatar)
+		likedPosts.value.forEach(applyAvatar)
+
+		if (currentPost.value) {
+			applyAvatar(currentPost.value)
+		}
+	}
+
 	return {
 		posts,
 		likedPosts,
@@ -225,5 +239,6 @@ export const usePostsStore = defineStore('posts', () => {
 		toggleReaction,
 		updatePostReaction,
 		clearPostsState,
+		updateUserAvatar,
 	}
 })

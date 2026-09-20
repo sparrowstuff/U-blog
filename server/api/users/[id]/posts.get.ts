@@ -1,29 +1,26 @@
 import prisma from '~/server/utils/database'
+import { requireUserId } from '~/server/utils/auth'
 
 export default defineEventHandler(async event => {
-	const userId = Number(getRouterParam(event, 'id'))
+	const requestedUserId = Number(getRouterParam(event, 'id'))
+	const userId = await requireUserId(event)
 
-	if (!userId || Number.isNaN(userId)) {
+	if (!Number.isInteger(requestedUserId) || requestedUserId <= 0) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Invalid user id',
 		})
 	}
 
-	const user = await prisma.user.findUnique({
-		where: { id: userId },
-		select: { id: true },
-	})
-
-	if (!user) {
+	if (requestedUserId !== userId) {
 		throw createError({
-			statusCode: 404,
-			statusMessage: 'User not found',
+			statusCode: 403,
+			statusMessage: 'Forbidden',
 		})
 	}
 
 	const posts = await prisma.post.findMany({
-		where: { userId },
+		where: { userId: requestedUserId },
 		orderBy: { createdAt: 'desc' },
 		include: {
 			user: {
@@ -42,14 +39,12 @@ export default defineEventHandler(async event => {
 				},
 			},
 			likes: {
-				select: {
-					userId: true,
-				},
+				where: { userId: userId },
+				select: { id: true },
 			},
 			dislikes: {
-				select: {
-					userId: true,
-				},
+				where: { userId: userId },
+				select: { id: true },
 			},
 		},
 	})
@@ -67,7 +62,13 @@ export default defineEventHandler(async event => {
 			user: post.user,
 			likesCount: post._count.likes,
 			dislikesCount: post._count.dislikes,
-			userReaction: liked ? 'like' : disliked ? 'dislike' : null,
+			// userReaction: liked ? 'like' : disliked ? 'dislike' : null,
+			userReaction:
+				post.likes.length > 0
+					? 'like'
+					: post.dislikes.length > 0
+						? 'dislike'
+						: null,
 		}
 	})
 })

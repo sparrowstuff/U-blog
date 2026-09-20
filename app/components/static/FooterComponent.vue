@@ -102,7 +102,7 @@
 			gap: 0.5rem;
 		}
 
-		@media (max-width: 37.5rem) {
+		@media (max-width: 28.12rem) {
 			flex-direction: column;
 			justify-content: unset;
 		}
@@ -122,7 +122,7 @@
 	align-items: center;
 	gap: 0.5rem;
 
-	@media (max-width: 37.5rem) {
+	@media (max-width: 28.12rem) {
 		flex-direction: column;
 		align-items: flex-start;
 	}

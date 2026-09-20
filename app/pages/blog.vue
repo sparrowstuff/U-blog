@@ -1,36 +1,54 @@
 <template>
 	<section class="blog">
-		<h1 class="blog__title">It's a great time for a post</h1>
-
 		<div class="container">
-			<div class="blog__wrapper">
-				<div class="blog__add-post" v-if="userStore.isAuthenticated">
-					<button
-						class="blog__add-post-btn btn btn--transparent"
-						type="button"
-						aria-label="Написать пост"
-						@click="isPosting = !isPosting"
-					>
-						{{ isPosting ? 'Отменить написание поста' : 'Написать пост' }}
-					</button>
+			<div
+				class="blog__heading"
+				:class="{ 'blog__heading--center': !userStore.isAuthenticated }"
+			>
+				<h1 class="blog__title">It's a great time for a post</h1>
+				<button
+					v-if="userStore.isAuthenticated"
+					class="blog__add-post-btn btn btn--transparent"
+					type="button"
+					aria-label="Написать пост"
+					@click="isPosting = !isPosting"
+				>
+					{{ isPosting ? 'Отменить написание поста' : 'Написать пост' }}
+				</button>
+			</div>
+			<AppPagination
+				class="blog__pagination"
+				:total-pages="totalPages"
+				:current-page="currentPage"
+				@update:current-page="changePage"
+			/>
+			<div class="blog__add-post" v-if="userStore.isAuthenticated">
+				<Transition class="blog__form-transition" name="form-wrapper">
 					<AddPostForm v-if="isPosting" />
+				</Transition>
+			</div>
+			<div class="blog__main-wrapper">
+				<div class="blog__wrapper">
+					<div class="blog__content" v-if="!loading">
+						<TransitionGroup class="blog__posts" name="post-list" tag="article">
+							<PostComponent
+								v-for="post in paginatedPosts"
+								:key="post.id"
+								:post="post"
+								:show-comments-immediately="false"
+							/>
+						</TransitionGroup>
+					</div>
+					<LoaderImg v-else />
 				</div>
-				<AppPagination
-					:total-pages="totalPages"
-					:current-page="currentPage"
-					@update:current-page="changePage"
-				/>
-				<div class="blog__content" v-if="!loading">
-					<TransitionGroup class="blog__posts" name="post-list" tag="article">
-						<PostComponent
-							v-for="post in paginatedPosts"
-							:key="post.id"
-							:post="post"
-							:show-comments-immediately="false"
-						/>
-					</TransitionGroup>
+
+				<div class="blog__most-liked-wrapper">
+					<MostLikedPostsCard
+						v-for="post in mostLikedPosts"
+						:post="post"
+						:key="post.id"
+					/>
 				</div>
-				<LoaderImg v-else />
 			</div>
 		</div>
 		<UpBtn />
@@ -45,6 +63,7 @@ import LoaderImg from '../components/static/LoaderImg.vue'
 import AppPagination from '../components/static/AppPagination.vue'
 import UpBtn from '../components/static/UpBtn.vue'
 import AddPostForm from '../components/static/AddPostForm.vue'
+import MostLikedPostsCard from '../components/static/mostLikedPostsCard.vue'
 
 import { useUserStore } from '~/stores/userStore.js'
 
@@ -55,6 +74,15 @@ const userStore = useUserStore()
 
 const loading = ref(false)
 const isPosting = ref(false)
+
+const mostLikedPosts = computed(() => {
+	return [...postsStore.posts]
+		.filter(post => (post.likesCount ?? 0) > 0)
+		.sort((firstPost, secondPost) => {
+			return (secondPost.likesCount ?? 0) - (firstPost.likesCount ?? 0)
+		})
+		.slice(0, 3)
+})
 
 // pagination-block
 const currentPage = ref(1)
@@ -87,16 +115,16 @@ onMounted(async () => {
 })
 
 useSeoMeta({
-  title: 'Блог',
-  description: 'Лента публикаций и постов пользователей.',
-  ogTitle: 'Блог',
-  ogDescription: 'Лента публикаций и постов пользователей.',
-  ogType: 'website',
-  ogImage: '/images/preview-blog.jpg',
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Блог',
-  twitterDescription: 'Лента публикаций и постов пользователей.',
-  twitterImage: '/images/preview-blog.jpg',
+	title: 'Блог',
+	description: 'Лента публикаций и постов пользователей.',
+	ogTitle: 'Блог',
+	ogDescription: 'Лента публикаций и постов пользователей.',
+	ogType: 'website',
+	ogImage: '/images/preview-blog.jpg',
+	twitterCard: 'summary_large_image',
+	twitterTitle: 'Блог',
+	twitterDescription: 'Лента публикаций и постов пользователей.',
+	twitterImage: '/images/preview-blog.jpg',
 })
 </script>
 
@@ -104,9 +132,26 @@ useSeoMeta({
 @import '@/assets/styles/global/variables';
 
 .blog {
+	&__heading {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.62rem;
+		margin-bottom: 0.62rem;
+
+		&--center {
+			grid-template-columns: 1fr;
+			justify-items: center;
+		}
+
+		@media (max-width: 56.25rem) {
+			grid-template-columns: 1fr;
+			grid-template-rows: repeat(2, 1fr);
+		}
+	}
+
 	&__title {
 		text-align: center;
-		margin-bottom: 1rem;
+		// margin-bottom: 1rem;
 		color: var(--text);
 
 		@media (max-width: 48rem) {
@@ -126,6 +171,26 @@ useSeoMeta({
 
 	&__add-post-btn {
 		width: 100%;
+	}
+
+	&__pagination {
+		margin-bottom: 1.12rem;
+
+		@media (max-width: 48rem) {
+			margin-bottom: 0.5rem;
+		}
+	}
+
+	&__main-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 0.5fr;
+		gap: 1rem;
+
+		// margin-bottom: 1.12rem;
+
+		@media (max-width: 64rem) {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	&__wrapper {
@@ -152,6 +217,16 @@ useSeoMeta({
 		}
 	}
 
+	&__most-liked-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+
+		@media (max-width: 64rem) {
+			display: none;
+		}
+	}
+
 	.post-list-enter-active,
 	.post-list-leave-active,
 	.post-list-move {
@@ -167,6 +242,30 @@ useSeoMeta({
 	.post-list-leave-active {
 		position: absolute;
 		width: 100%;
+	}
+
+	.form-wrapper-enter-active {
+		transition:
+			opacity 0.3s ease-out,
+			transform 0.3s ease-out;
+	}
+
+	.form-wrapper-leave-active {
+		transition:
+			opacity 0.3s ease-in,
+			transform 0.3s ease-in;
+	}
+
+	.form-wrapper-enter-from,
+	.form-wrapper-leave-to {
+		opacity: 0;
+		transform: translateX(-2.5rem);
+	}
+
+	.form-wrapper-enter-to,
+	.form-wrapper-leave-from {
+		opacity: 1;
+		transform: translateX(0);
 	}
 }
 </style>

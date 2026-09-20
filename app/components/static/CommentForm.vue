@@ -72,7 +72,6 @@ const handleSubmit = async () => {
 	try {
 		await commentsStore.addComment(props.postId, {
 			content: commentText.value.trim(),
-			userId: userStore.user.id,
 		})
 
 		commentText.value = ''

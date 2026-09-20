@@ -1,20 +1,15 @@
 import prisma from '~/server/utils/database'
+import { requireUserId } from '~/server/utils/auth'
 
 export default defineEventHandler(async event => {
 	const postId = Number(getRouterParam(event, 'id'))
-	const body = await readBody<{ userId: number }>(event)
+	const userId = await requireUserId(event)
+	// const body = await readBody<{ userId: number }>(event)
 
-	if (!postId || Number.isNaN(postId)) {
+	if (!Number.isInteger(postId) || postId <= 0) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Некорректный id поста',
-		})
-	}
-
-	if (!body?.userId) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'userId обязателен',
 		})
 	}
 
@@ -30,7 +25,14 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	if (post.userId !== body.userId) {
+	// if (!body?.userId) {
+	// 	throw createError({
+	// 		statusCode: 400,
+	// 		statusMessage: 'userId обязателен',
+	// 	})
+	// }
+
+	if (post.userId !== userId) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Нет прав на удаление этого поста',

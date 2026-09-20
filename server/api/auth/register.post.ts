@@ -2,6 +2,7 @@ import prisma from '~/server/utils/database'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
 import { setCookie } from 'h3'
+import { setAuthCookie } from '~/server/utils/auth'
 
 const registerSchema = z.object({
 	name: z.string().min(2, 'Имя минимум 2 символа'),
@@ -20,7 +21,7 @@ export default defineEventHandler(async event => {
 		const fieldErrors: Record<string, string> = {}
 
 		for (const issue of parsed.error.issues) {
-			const key = String(issue.path[0 ?? 'form'])
+			const key = String(issue.path[0] ?? 'form')
 			fieldErrors[key] = issue.message
 		}
 
@@ -72,12 +73,14 @@ export default defineEventHandler(async event => {
 		},
 	})
 
-	setCookie(event, 'userId', String(user.id), {
-		httpOnly: true,
-		sameSite: 'lax',
-		path: '/',
-		maxAge: 60 * 60 * 24 * 3,
-	})
+	// setCookie(event, 'userId', String(user.id), {
+	// 	httpOnly: true,
+	// 	sameSite: 'lax',
+	// 	path: '/',
+	// 	maxAge: 60 * 60 * 24 * 3,
+	// })
+
+	await setAuthCookie(event, user.id)
 
 	return {
 		id: user.id,

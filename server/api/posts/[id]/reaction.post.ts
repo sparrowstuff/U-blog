@@ -1,8 +1,10 @@
 import prisma from '~/server/utils/database'
 import { getCookie } from 'h3'
+import { requireUserId } from '~/server/utils/auth'
 import { ReactionType } from '@/types/Reaction'
 
 export default defineEventHandler(async event => {
+	const userId = await requireUserId(event)
 	const postId = Number(getRouterParam(event, 'id'))
 	const body = await readBody<{ type: ReactionType }>(event)
 	const type = body.type
@@ -21,7 +23,7 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const userIdCookie = getCookie(event, 'userId')
+	const userIdCookie = userId || Number(getCookie(event, 'userId'))
 
 	if (!userIdCookie) {
 		throw createError({

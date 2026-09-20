@@ -37,59 +37,96 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const likedPostRecords = await prisma.postLike.findMany({
-		where: {
-			userId: currentUserId,
-		},
-		orderBy: {
-			createdAt: 'desc',
-		},
-		select: {
-			createdAt: true,
+	const [likedPostRecord, comments] = await Promise.all([
+		prisma.postLike.findMany({
+			where: {
+				userId: currentUserId,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+			select: {
+				id: true,
+				createdAt: true,
 
-			post: {
-				select: {
-					id: true,
-					title: true,
-					description: true,
-					userId: true,
-					createdAt: true,
-					updatedAt: true,
+				post: {
+					select: {
+						id: true,
+						title: true,
+						description: true,
+						userId: true,
+						createdAt: true,
+						updatedAt: true,
 
-					user: {
-						select: {
-							id: true,
-							name: true,
-							surName: true,
-							email: true,
-							avatarUrl: true,
+						user: {
+							select: {
+								id: true,
+								name: true,
+								surName: true,
+								email: true,
+								avatarUrl: true,
+							},
 						},
-					},
 
-					_count: {
-						select: {
-							likes: true,
-							dislikes: true,
+						_count: {
+							select: {
+								likes: true,
+								dislikes: true,
+							},
 						},
 					},
 				},
 			},
-		},
-	})
+		}),
 
-	return likedPostRecords.map(record => ({
+		prisma.comment.findMany({
+			where: {
+				userId: currentUserId,
+			},
+			orderBy: { createdAt: 'desc' },
+			select: {
+				id: true,
+				content: true,
+				createdAt: true,
+				updatedAt: true,
+				postId: true,
+				userId: true,
+
+				user: {
+					select: {
+						id: true,
+						name: true,
+						surName: true,
+						email: true,
+						avatarUrl: true,
+					},
+				},
+
+				post: {
+					select: {
+						id: true,
+						title: true,
+						userId: true,
+					},
+				},
+			},
+		}),
+	])
+
+	const likedPosts = likedPostRecord.map(record => ({
 		id: record.post.id,
 		title: record.post.title,
 		description: record.post.description,
 		userId: record.post.userId,
 		createdAt: record.post.createdAt,
 		updatedAt: record.post.updatedAt,
-
 		likesCount: record.post._count.likes,
 		dislikesCount: record.post._count.dislikes,
 
 		userReaction: 'like' as ReactionType,
+
 		user: record.post.user,
-		likedAt: record.createdAt,
 	}))
+
+	return { likedPosts, comments }
 })

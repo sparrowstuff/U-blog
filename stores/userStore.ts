@@ -2,11 +2,29 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { PublicUser } from '@/types/PublicUser'
 import type { UpdateUserPayload } from '@/types/UpdateUserType'
+import type { UserActivityResponse } from '@/types/UserActivity'
 
 export const useUserStore = defineStore('user', () => {
 	const user = ref<PublicUser | null>(null)
+	const userActivity = ref<UserActivityResponse>({
+		likedPosts: [],
+		comments: [],
+	})
+
 	const isReady = ref(false)
 	const isAuthenticated = computed(() => !!user.value)
+	const isActivityLoading = ref(false)
+	const activityError = ref<string | null>(null)
+
+	const clearUserActivity = () => {
+		userActivity.value = {
+			likedPosts: [],
+			comments: [],
+		}
+
+		activityError.value = null
+		isActivityLoading.value = false
+	}
 
 	const setUser = (payload: PublicUser) => {
 		user.value = payload
@@ -14,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
 
 	const clearUser = () => {
 		user.value = null
+		clearUserActivity()
 	}
 
 	const fetchUser = async () => {
@@ -24,6 +43,34 @@ export const useUserStore = defineStore('user', () => {
 			user.value = res
 		} finally {
 			isReady.value = false
+		}
+	}
+
+	const fetchUserActivity = async () => {
+		if (!user.value) {
+			throw new Error('User is not authenticated')
+		}
+
+		isActivityLoading.value = true
+		activityError.value = null
+
+		try {
+			const result = await $fetch<UserActivityResponse>(
+				`/api/users/${user.value.id}/activity`,
+			)
+
+			userActivity.value = result
+
+			return result
+		} catch (error: any) {
+			activityError.value =
+				error?.data?.statusMessage ||
+				error?.statusMessage ||
+				'Не удалось загрузить активность пользователя'
+
+			throw error
+		} finally {
+			isActivityLoading.value = false
 		}
 	}
 
@@ -55,27 +102,36 @@ export const useUserStore = defineStore('user', () => {
 		return updatedUser
 	}
 
-	const uploadAvatar = async (userId: number, file: File) => {
+	const uploadAvatar = async (file: File): Promise<string> => {
+		if (!user.value) {
+			throw new Error('User is not authenticated')
+		}
+
 		const formData = new FormData()
 		formData.append('file', file)
 
-		const res = await $fetch<{ avatarUrl: string }>(
-			`/api/users/${userId}/avatar`,
-			{
-				method: 'POST',
-				body: formData,
-			},
-		)
+		const result = await $fetch<{
+			avatarUrl: string
+		}>(`/api/users/${user.value.id}/avatar`, {
+			method: 'POST',
+			body: formData,
+		})
 
-		return res.avatarUrl
+		user.value.avatarUrl = result.avatarUrl
+
+		return result.avatarUrl
 	}
 
 	return {
 		user,
 		isAuthenticated,
+		userActivity,
+		isActivityLoading,
+		activityError,
 		setUser,
 		clearUser,
 		fetchUser,
+		fetchUserActivity,
 		logout,
 		isReady,
 		deleteUser,

@@ -1,11 +1,12 @@
 import prisma from '~/server/utils/database'
 import { getCookie } from 'h3'
+import { getOptionalUserId } from '~/server/utils/auth'
 import type { ReactionType } from '~/types/Reaction'
 
 // type ReactionType = 'like' | 'dislike' | null
 
 export default defineEventHandler(async event => {
-	const userIdCookie = getCookie(event, 'userId')
+	const userIdCookie = await getOptionalUserId(event)
 	const currentUserId = userIdCookie ? Number(userIdCookie) : null
 
 	const posts = await prisma.post.findMany({

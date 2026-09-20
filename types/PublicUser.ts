@@ -5,5 +5,5 @@ export type PublicUser = {
 	email: string
 	createdAt: string
 	isAdmin: boolean
-	avatarUrl?: string
+	avatarUrl?: string | null
 }

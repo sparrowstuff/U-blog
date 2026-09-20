@@ -1,9 +1,17 @@
 import prisma from '~/server/utils/database'
-import { deleteCookie, getCookie } from 'h3'
+// import { deleteCookie, getCookie } from 'h3'
+import { clearAuthCookie, requireUserId } from '~/server/utils/auth'
 
 export default defineEventHandler(async event => {
 	const paramId = Number(getRouterParam(event, 'id'))
-	const cookieUserId = Number(getCookie(event, 'userId'))
+	const currentUserId = await requireUserId(event)
+
+	if (!Number.isInteger(paramId) || paramId <= 0) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Invalid user id',
+		})
+	}
 
 	if (!paramId || Number.isNaN(paramId)) {
 		throw createError({
@@ -12,14 +20,14 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	if (!cookieUserId || Number.isNaN(cookieUserId)) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		})
-	}
+	// if (!cookieUserId || Number.isNaN(cookieUserId)) {
+	// 	throw createError({
+	// 		statusCode: 401,
+	// 		statusMessage: 'Unauthorized',
+	// 	})
+	// }
 
-	if (cookieUserId !== paramId) {
+	if (currentUserId !== paramId) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden',
@@ -81,9 +89,7 @@ export default defineEventHandler(async event => {
 		})
 	})
 
-	deleteCookie(event, 'userId', {
-		path: '/',
-	})
+	await clearAuthCookie(event)
 
 	return { success: true }
 })

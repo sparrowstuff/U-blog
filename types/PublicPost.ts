@@ -15,6 +15,6 @@ export type PublicPost = {
 		name: string
 		surName: string
 		email: string
-		avatarUrl: string
+		avatarUrl: string | null
 	}
 }

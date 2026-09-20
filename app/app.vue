@@ -14,7 +14,7 @@ const userStore = useUserStore()
 const themeStore = useThemeStore()
 const cookieStore = useCookieStore()
 
-useHead({
+useHead(() => ({
 	title: 'U-Blog',
 	meta: [
 		{
@@ -22,14 +22,22 @@ useHead({
 			content: `U-blog - write everything what's on your mind today`,
 		},
 	],
-})
+	htmlAttrs: {
+		'data-theme': themeStore.resolvedTheme,
+		style: 'color-scheme: ${themeStore.resolvedTheme};',
+	},
+}))
 
 onMounted(async () => {
-	await userStore.fetchUser()
-
-	themeStore.initTheme()
+	// themeStore.initTheme()
 
 	cookieStore.loadCookieStatus()
+
+	try {
+		await userStore.fetchUser()
+	} catch (error: any) {
+		console.error('Error fetching user:', error)
+	}
 })
 
 // вместо onMounted - callOnce для однократного вызова

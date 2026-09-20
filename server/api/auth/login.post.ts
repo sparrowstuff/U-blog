@@ -1,7 +1,8 @@
 import prisma from '~/server/utils/database'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
-import { setCookie } from 'h3'
+// import { setCookie } from 'h3'
+import { setAuthCookie } from '~/server/utils/auth'
 
 const loginSchema = z.object({
 	email: z.string().email('Некорректный email'),
@@ -60,12 +61,14 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	setCookie(event, 'userId', String(user.id), {
-		httpOnly: true,
-		sameSite: 'lax',
-		path: '/',
-		maxAge: 60 * 60 * 24 * 3,
-	})
+	// setCookie(event, 'userId', String(user.id), {
+	// 	httpOnly: true,
+	// 	sameSite: 'lax',
+	// 	path: '/',
+	// 	maxAge: 60 * 60 * 24 * 3,
+	// })
+
+	await setAuthCookie(event, user.id)
 
 	return {
 		id: user.id,

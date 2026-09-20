@@ -14,6 +14,10 @@ html {
 	color-scheme: dark light;
 }
 
+main {
+	min-height: 100dvh;
+}
+
 body {
 	background-color: var(--bg);
 	font-weight: 500;
@@ -95,4 +99,18 @@ a {
 	&:focus-visible {
 		outline: unset;
 	}
+}
+
+// page vue transitions, change inside nuxt.config.ts
+.page-enter-active,
+.page-leave-active {
+	transition:
+		opacity 0.3s ease,
+		filter 0.3s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+	opacity: 0;
+	filter: blur(1rem);
 }

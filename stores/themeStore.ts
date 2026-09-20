@@ -2,42 +2,61 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Theme } from '@/types/Theme'
 
+const isTheme = (value: string): value is Theme => {
+	return value === 'light' || value === 'dark' || value === 'system'
+}
+
 export const useThemeStore = defineStore('theme', () => {
-	const theme = ref<Theme>('system')
+	/* Cookie доступна и серверу, и браузеру */
+	const themeCookie = useCookie<Theme>('theme', {
+		default: () => 'system',
+		path: '/',
+		sameSite: 'lax',
+		maxAge: 60 * 60 * 24 * 365,
+	})
+
+	const initialTheme: Theme = isTheme(themeCookie.value)
+		? themeCookie.value
+		: 'system'
+
+	const theme = ref<Theme>(initialTheme)
 	const isReady = ref(false)
 
 	const getSystemTheme = (): Exclude<Theme, 'system'> => {
-		if (process.server) return 'dark'
+		if (import.meta.server) {
+			return 'dark'
+		}
 
 		return window.matchMedia('(prefers-color-scheme: dark)').matches
 			? 'dark'
 			: 'light'
 	}
 
-	const resolvedTheme = computed<Exclude<ThemeMode, 'system'>>(() => {
+	const resolvedTheme = computed<Exclude<Theme, 'system'>>(() => {
 		return theme.value === 'system' ? getSystemTheme() : theme.value
 	})
 
 	const applyTheme = () => {
-		if (process.server) return
+		if (import.meta.server) return
 
-		const value = resolvedTheme.value
-		document.documentElement.dataset.theme = value
-		document.documentElement.style.colorScheme = value
+		// const value = resolvedTheme.value
+
+		// document.documentElement.dataset.theme = value
+		// document.documentElement.style.colorScheme = value
+
 		isReady.value = true
 	}
 
 	const initTheme = () => {
-		if (process.server) return
+		if (import.meta.server) return
 
-		const savedTheme = localStorage.getItem('theme') as Theme | null
+		const savedLocalTheme = localStorage.getItem('theme')
 
-		if (
-			savedTheme === 'light' ||
-			savedTheme === 'dark' ||
-			savedTheme === 'system'
-		) {
-			theme.value = savedTheme
+		if (isTheme(savedLocalTheme) && !isTheme(themeCookie.value)) {
+			theme.value = savedLocalTheme
+			themeCookie.value = savedLocalTheme
+		} else if (isTheme(themeCookie.value)) {
+			theme.value = themeCookie.value
 		}
 
 		applyTheme()
@@ -45,12 +64,15 @@ export const useThemeStore = defineStore('theme', () => {
 
 	const setTheme = (value: Theme) => {
 		theme.value = value
+		themeCookie.value = value
 
-		if (process.client) {
+		/** Можно временно оставить для совместимости,но основным источником теперь является cookie.*/
+		if (import.meta.client) {
 			localStorage.setItem('theme', value)
 		}
 
-		applyTheme()
+		// applyTheme()
+		isReady.value = true
 	}
 
 	const toggleTheme = () => {

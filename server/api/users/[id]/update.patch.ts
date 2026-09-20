@@ -1,5 +1,6 @@
 import prisma from '~/server/utils/database'
-import { getCookie } from 'h3'
+// import { getCookie } from 'h3'
+import { requireUserId } from '~/server/utils/auth'
 import { z } from 'zod'
 
 const updateUserSchema = z.object({
@@ -8,12 +9,15 @@ const updateUserSchema = z.object({
 		.string()
 		.min(2, 'Фамилия должна быть не короче 2 символов')
 		.optional(),
-	avatarUrl: z.string().nullable().optional(),
 })
 
 export default defineEventHandler(async event => {
 	const paramId = Number(getRouterParam(event, 'id'))
-	const cookieUserId = Number(getCookie(event, 'userId'))
+	const cookieUserId = await requireUserId(event)
+
+	if (cookieUserId !== paramId) {
+		throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
+	}
 
 	if (!paramId || Number.isNaN(paramId)) {
 		throw createError({ statusCode: 400, statusMessage: 'Invalid user id' })
@@ -65,7 +69,7 @@ export default defineEventHandler(async event => {
 
 	const existingUser = await prisma.user.findUnique({
 		where: { id: paramId },
-		select: { name: true, surName: true, avatarUrl: true },
+		select: { name: true, surName: true },
 	})
 
 	const updatedUser = await prisma.user.update({
@@ -73,7 +77,6 @@ export default defineEventHandler(async event => {
 		data: {
 			name: parsed.data.name ?? existingUser?.name,
 			surName: parsed.data.surName ?? existingUser?.surName,
-			avatarUrl: parsed.data.avatarUrl ?? existingUser?.avatarUrl ?? null,
 		},
 		select: {
 			id: true,

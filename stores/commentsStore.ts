@@ -28,10 +28,7 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 		}
 	}
 
-	const addComment = async (
-		postId: number,
-		payload: { content: string; userId: number },
-	) => {
+	const addComment = async (postId: number, payload: { content: string }) => {
 		isLoading.value = true
 		customError.value = null
 
@@ -87,6 +84,16 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 		}
 	}
 
+	const updateUserAvatar = (userId: number, avatarUrl: string) => {
+		for (const comments of Object.values(commentsByPostId.value)) {
+			for (const comment of comments) {
+				if (comment.user.id === userId) {
+					comment.user.avatarUrl = avatarUrl
+				}
+			}
+		}
+	}
+
 	return {
 		isLoading,
 		customError,
@@ -95,5 +102,6 @@ export const useCommentsStore = defineStore('commentsStore', () => {
 		addComment,
 		clearComments,
 		deleteComment,
+		updateUserAvatar,
 	}
 })

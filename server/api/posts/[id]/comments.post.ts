@@ -1,7 +1,25 @@
 import prisma from '~/server/utils/database'
+import { requireUserId } from '~/server/utils/auth'
+import { z } from 'zod'
+
+const commentSchema = z.object({
+	content: z
+		.string()
+		.trim()
+		.min(1, 'Comment content is required')
+		.max(2000, 'Comment content must be at most 2000 characters'),
+})
 
 export default defineEventHandler(async event => {
+	const userId = await requireUserId(event)
 	const postId = Number(getRouterParam(event, 'id'))
+
+	if (!Number.isInteger(postId) || postId <= 0) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Invalid post id',
+		})
+	}
 
 	if (!postId || Number.isNaN(postId)) {
 		throw createError({
@@ -10,20 +28,27 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const body = await readBody<{
-		content?: string
-		userId?: number
-	}>(event)
+	const body = await readBody(event)
+	const parsed = commentSchema.safeParse(body)
 
-	const content = body.content?.trim()
-	const userId = Number(body.userId)
-
-	if (!content) {
+	if (!parsed.success) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'Comment content is required',
+			statusMessage: parsed.error.issues[0]?.message,
 		})
 	}
+
+	// const body = await readBody<{
+	// 	content?: string
+	// }>(event)
+
+	// const content = body.content?.trim()
+	// const userId = Number(body.userId)
+
+	const post = await prisma.post.findUnique({
+		where: { id: postId },
+		select: { id: true },
+	})
 
 	if (!userId || Number.isNaN(userId)) {
 		throw createError({
@@ -31,11 +56,6 @@ export default defineEventHandler(async event => {
 			statusMessage: 'Invalid user id',
 		})
 	}
-
-	const post = await prisma.post.findUnique({
-		where: { id: postId },
-		select: { id: true },
-	})
 
 	if (!post) {
 		throw createError({
@@ -56,9 +76,9 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const comment = await prisma.comment.create({
+	return prisma.comment.create({
 		data: {
-			content,
+			content: parsed.data.content,
 			postId,
 			userId,
 		},
@@ -74,6 +94,4 @@ export default defineEventHandler(async event => {
 			},
 		},
 	})
-
-	return comment
 })

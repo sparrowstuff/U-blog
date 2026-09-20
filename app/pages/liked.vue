@@ -1,43 +1,44 @@
 <template>
-	<section class="liked">
-		<div class="container">
-			<div class="liked__wrapper">
-				<div class="liked__info">
-					<h2 class="liked__greeting">
-						Собрали здесь все что тебе когда либо понравилось,
-					</h2>
-					<span class="liked__user-name">{{ userStore.user?.name }}</span>
-				</div>
-				<div class="liked__loaded" v-if="userStore.user && !isLoading">
-					<div class="liked__content" v-if="postsStore.likedPosts.length > 0">
-						<AppPagination
-							:total-pages="totalPages"
-							:current-page="currentPage"
-							@update:current-page="changePage"
-						/>
-						<TransitionGroup
-							class="liked__posts"
-							name="post-list"
-							tag="article"
-						>
-							<PostComponent
-								v-for="post in paginatedPosts"
-								:key="post.id"
-								:post="post"
-								:show-comments-immediately="false"
-							/>
-						</TransitionGroup>
+	<main class="liked-page">
+		<section class="liked">
+			<div class="container">
+				<div class="liked__wrapper">
+					<div class="liked__info">
+						<h2 class="liked__greeting">
+							Собрали здесь все что тебе когда либо понравилось,
+						</h2>
+						<span class="liked__user-name">{{ userStore.user?.name }}</span>
 					</div>
-					<span class="liked__no-content-text" v-else
-						>Однако, пока что, вам ничего не понравилось...</span
-					>
+					<div class="liked__loaded" v-if="userStore.user && !isLoading">
+						<div class="liked__content" v-if="postsStore.likedPosts.length > 0">
+							<AppPagination
+								:total-pages="totalPages"
+								:current-page="currentPage"
+								@update:current-page="changePage"
+							/>
+							<TransitionGroup
+								class="liked__posts"
+								name="post-list"
+								tag="article"
+							>
+								<PostComponent
+									v-for="post in paginatedPosts"
+									:key="post.id"
+									:post="post"
+									:show-comments-immediately="false"
+								/>
+							</TransitionGroup>
+						</div>
+						<span class="liked__no-content-text" v-else
+							>Однако, пока что, вам ничего не понравилось...</span
+						>
+					</div>
+					<LoaderImg v-else />
 				</div>
-				<LoaderImg v-else />
 			</div>
-		</div>
-	</section>
-
-	<UpBtn />
+		</section>
+		<UpBtn />
+	</main>
 </template>
 
 <script setup lang="ts">
@@ -121,6 +122,10 @@ useSeoMeta({
 
 <style scoped lang="scss">
 @import '@/assets/styles/global/variables';
+
+.liked-page {
+	min-height: 100vh;
+}
 
 .liked {
 	&__wrapper {

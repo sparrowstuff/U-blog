@@ -1,6 +1,6 @@
 <template>
 	<article class="update-user-form">
-		<form @submit.prevent="updateUser(userId)" class="update-user-form__form">
+		<form @submit.prevent="updateUser" class="update-user-form__form">
 			<div class="update-user-form__input-block">
 				<label for="userName" class="update-user-form__label">Новое имя</label>
 				<input
@@ -38,7 +38,7 @@
 					id="userAvatar"
 					name="userAvatar"
 					class="update-user-form__input"
-					accept="image/*"
+					accept="image/jpeg,image/png,image/webp"
 					@change="onAvatarChange"
 				/>
 			</div>
@@ -71,24 +71,37 @@
 		>
 			{{ isSubmitting ? 'Отмена...' : 'Отменить обновление' }}
 		</button>
+		<span v-if="avatarError" class="update-user-form__error">
+			{{ avatarError }}
+		</span>
 	</article>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onBeforeUnmount } from 'vue'
+// import { useRoute } from 'vue-router'
 import { useUserStore } from '~/stores/userStore'
+import { usePostsStore } from '~/stores/postsStore'
+import { useCommentsStore } from '~/stores/commentsStore'
 import type { UpdateUserPayload } from '~/types/UpdateUserType'
 
 const userStore = useUserStore()
-const route = useRoute()
+const postsStore = usePostsStore()
+const commentsStore = useCommentsStore()
 
-const userId = Number(route.params.id)
+const userId = userStore.user?.id
 
 const emit = defineEmits<{
 	(e: 'saved'): void
 	(e: 'cancel'): void
 }>()
+
+const MAX_AVATAR_SIZE = 5 * 1024 * 1024
+
+const ALLOWED_AVATAR_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+
+const avatarError = ref('')
+const formError = ref('')
 
 const userName = ref('')
 const userSurName = ref('')
@@ -98,25 +111,79 @@ const avatarPreviewUrl = ref<string | null>(
 	userStore.user?.avatarUrl || '/images/no-photo.webp',
 )
 
+const revokeAvatarPreview = () => {
+	if (avatarPreviewUrl.value?.startsWith('blob:')) {
+		URL.revokeObjectURL(avatarPreviewUrl.value)
+	}
+}
+
+// const onAvatarChange = (event: Event) => {
+// 	const target = event.target as HTMLInputElement
+// 	const file = target.files?.[0] ?? null
+
+// 	if (avatarPreviewUrl.value?.startsWith('blob:')) {
+// 		URL.revokeObjectURL(avatarPreviewUrl.value)
+// 	}
+
+// 	userAvatarFile.value = file
+
+// 	avatarPreviewUrl.value = file
+// 		? URL.createObjectURL(file)
+// 		: userStore.user?.avatarUrl || '/images/no-photo.webp'
+// }
+
 const onAvatarChange = (event: Event) => {
 	const target = event.target as HTMLInputElement
 	const file = target.files?.[0] ?? null
 
-	if (avatarPreviewUrl.value?.startsWith('blob:')) {
-		URL.revokeObjectURL(avatarPreviewUrl.value)
+	avatarError.value = ''
+	revokeAvatarPreview()
+
+	if (!file) {
+		userAvatarFile.value = null
+		avatarPreviewUrl.value =
+			userStore.user?.avatarUrl || '/images/no-photo.webp'
+
+		return
+	}
+
+	if (!ALLOWED_AVATAR_TYPES.has(file.type)) {
+		avatarError.value = 'Разрешены только JPEG, PNG и WebP'
+
+		userAvatarFile.value = null
+		target.value = ''
+
+		avatarPreviewUrl.value =
+			userStore.user?.avatarUrl || '/images/no-photo.webp'
+
+		return
+	}
+
+	if (file.size > MAX_AVATAR_SIZE) {
+		avatarError.value = 'Размер аватара не должен превышать 5 МБ'
+
+		userAvatarFile.value = null
+		target.value = ''
+
+		avatarPreviewUrl.value =
+			userStore.user?.avatarUrl || '/images/no-photo.webp'
+
+		return
 	}
 
 	userAvatarFile.value = file
-
-	avatarPreviewUrl.value = file
-		? URL.createObjectURL(file)
-		: userStore.user?.avatarUrl || '/images/no-photo.webp'
+	avatarPreviewUrl.value = URL.createObjectURL(file)
 }
 
 const clearForm = () => {
+	revokeAvatarPreview()
+
 	userName.value = ''
 	userSurName.value = ''
 	userAvatarFile.value = null
+	avatarError.value = ''
+	formError.value = ''
+
 	avatarPreviewUrl.value = userStore.user?.avatarUrl || '/images/no-photo.webp'
 }
 
@@ -126,42 +193,127 @@ const validateForm = () => {
 	)
 }
 
-const updateUser = async (userId: number) => {
-	if (!userId || Number.isNaN(userId)) return
+// const updateUser = async (userId: number) => {
+// 	if (!userId || Number.isNaN(userId)) return
 
-	const hasName = !!userName.value.trim()
-	const hasSurName = !!userSurName.value.trim()
-	const hasAvatar = !!userAvatarFile.value
+// 	const hasName = !!userName.value.trim()
+// 	const hasSurName = !!userSurName.value.trim()
+// 	const hasAvatar = !!userAvatarFile.value
 
-	if (!hasName && !hasSurName && !hasAvatar) return
+// 	if (!hasName && !hasSurName && !hasAvatar) return
+
+// 	isSubmitting.value = true
+
+// 	try {
+// 		let avatarUrl: string | null | undefined = undefined
+
+// 		if (userAvatarFile.value) {
+// 			avatarUrl = await userStore.uploadAvatar(userId, userAvatarFile.value)
+// 		}
+
+// 		const payload: UpdateUserPayload = {
+// 			name: hasName ? userName.value.trim() : userStore.user?.name,
+// 			surName: hasSurName ? userSurName.value.trim() : userStore.user?.surName,
+// 			...(avatarUrl ? { avatarUrl } : {}),
+// 		}
+
+// 		await userStore.updateUser(userId, payload)
+// 		clearForm()
+// 		emit('saved')
+// 	} finally {
+// 		isSubmitting.value = false
+// 	}
+// }
+
+const updateUser = async () => {
+	const currentUser = userStore.user
+
+	if (!currentUser) {
+		formError.value = 'Пользователь не авторизован'
+		return
+	}
+
+	const name = userName.value.trim()
+	const surName = userSurName.value.trim()
+
+	const hasName = name.length > 0
+	const hasSurName = surName.length > 0
+	const hasAvatar = userAvatarFile.value !== null
+
+	formError.value = ''
+	avatarError.value = ''
+
+	if (!hasName && !hasSurName && !hasAvatar) {
+		formError.value = 'Укажите данные, которые необходимо изменить'
+		return
+	}
+
+	if (hasName && name.length < 2) {
+		formError.value = 'Имя должно содержать минимум 2 символа'
+		return
+	}
+
+	if (hasSurName && surName.length < 2) {
+		formError.value = 'Фамилия должна содержать минимум 2 символа'
+		return
+	}
 
 	isSubmitting.value = true
 
 	try {
-		let avatarUrl: string | null | undefined = undefined
+		/*
+		 * Имя и фамилия обновляются отдельно.
+		 * avatarUrl сюда не передаётся — серверный avatar.post.ts
+		 * самостоятельно записывает его в базу данных.
+		 */
+		if (hasName || hasSurName) {
+			const payload: UpdateUserPayload = {}
+
+			if (hasName) {
+				payload.name = name
+			}
+
+			if (hasSurName) {
+				payload.surName = surName
+			}
+
+			await userStore.updateUser(currentUser.id, payload)
+		}
 
 		if (userAvatarFile.value) {
-			avatarUrl = await userStore.uploadAvatar(userId, userAvatarFile.value)
+			/*
+			 * uploadAvatar принимает только File.
+			 * ID берётся внутри userStore из авторизованного пользователя.
+			 */
+			const avatarUrl = await userStore.uploadAvatar(userAvatarFile.value)
+
+			/*
+			 * Синхронизируем уже загруженные клиентские данные.
+			 * В БД URL уже сохранён endpoint-ом avatar.post.ts.
+			 */
+			postsStore.updateUserAvatar(currentUser.id, avatarUrl)
+			commentsStore.updateUserAvatar(currentUser.id, avatarUrl)
 		}
 
-		const payload: UpdateUserPayload = {
-			name: hasName ? userName.value.trim() : userStore.user?.name,
-			surName: hasSurName ? userSurName.value.trim() : userStore.user?.surName,
-			...(avatarUrl ? { avatarUrl } : {}),
-		}
-
-		await userStore.updateUser(userId, payload)
 		clearForm()
 		emit('saved')
+	} catch (error: any) {
+		formError.value =
+			error?.data?.statusMessage ||
+			error?.statusMessage ||
+			error?.message ||
+			'Не удалось обновить профиль'
 	} finally {
 		isSubmitting.value = false
 	}
 }
 
 onBeforeUnmount(() => {
-	if (avatarPreviewUrl.value?.startsWith('blob:')) {
-		URL.revokeObjectURL(avatarPreviewUrl.value)
-	}
+	// if (avatarPreviewUrl.value?.startsWith('blob:')) {
+	// 	URL.revokeObjectURL(avatarPreviewUrl.value)
+	// }
+
+	revokeAvatarPreview()
 })
 </script>
 
@@ -174,7 +326,7 @@ onBeforeUnmount(() => {
 	padding: 0.62rem 0.62rem 0.62rem 0.62rem;
 	border: 1px solid var(--border);
 	border-radius: 0.5rem;
-	background: var(--surface);
+	// background: var(--surface);
 
 	display: flex;
 	flex-direction: column;

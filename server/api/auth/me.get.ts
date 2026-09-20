@@ -1,8 +1,9 @@
 import prisma from '~/server/utils/database'
-import { getCookie } from 'h3'
+// import { getCookie } from 'h3'
+import { getOptionalUserId } from '~/server/utils/auth'
 
 export default defineEventHandler(async event => {
-	const userId = getCookie(event, 'userId')
+	const userId = await getOptionalUserId(event)
 
 	if (!userId) return null
 

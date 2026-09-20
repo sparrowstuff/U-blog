@@ -1,6 +1,6 @@
 :root {
 	--bg: #f5f5f5;
-	--bg-theme-btn: oklch(14.479% 0.00002 271.152 / 0.186);
+	--bg-theme-btn: oklch(14.479% 0.00002 271.152);
 	--surface: #ffffff;
 	--surface-elevated: #ffffff;
 	--surface-alt: #f5f5f5;
@@ -35,7 +35,8 @@
 
 html[data-theme='dark'] {
 	// --bg: #013220; // basic green color
-	--bg: oklch(14.479% 0.00002 271.152 / 0.186);
+	// --bg: oklch(14.479% 0.00002 271.152 / 0.186);
+	--bg: oklch(14.479% 0.00002 271.152);
 	--bg-theme-btn: #f5f5f5;
 	--surface: #f5f5f5;
 	--surface-elevated: #013220;

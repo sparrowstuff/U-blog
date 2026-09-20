@@ -88,9 +88,10 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { usePostsStore } from '~/stores/postsStore'
-import { ref, computed } from 'vue'
-import type { ReactionType } from '@/types/Reaction'
+import { useUserStore } from '~/stores/userStore'
+import type { ReactionType } from '~/types/Reaction'
 
 const props = defineProps<{
 	postId: number
@@ -100,37 +101,35 @@ const props = defineProps<{
 }>()
 
 const postsStore = usePostsStore()
+const userStore = useUserStore()
 
 const isLiked = computed(() => props.userReaction === 'like')
 const isDisliked = computed(() => props.userReaction === 'dislike')
 const isLoading = computed(() => postsStore.isLoading)
 
 const addLike = async () => {
-	const res = await postsStore.toggleReaction(props.postId, 'like')
+	try {
+		await postsStore.toggleReaction(props.postId, 'like')
 
-	postsStore.updatePostReaction(
-		props.postId,
-		res.likesCount,
-		res.dislikesCount,
-		res.userReaction,
-	)
-
-	if (res.userReaction !== 'like') {
-		postsStore.removeLikedPost(props.postId)
+		if (userStore.user) {
+			await userStore.fetchUserActivity()
+		}
+	} catch (error) {
+		console.error('Error toggling like:', error)
 	}
 }
 
 const addDislike = async () => {
-	const res = await postsStore.toggleReaction(props.postId, 'dislike')
+	try {
+		await postsStore.toggleReaction(props.postId, 'dislike')
 
-	postsStore.updatePostReaction(
-		props.postId,
-		res.likesCount,
-		res.dislikesCount,
-		res.userReaction,
-	)
-
-	postsStore.removeLikedPost(props.postId)
+		// После дизлайка пост не должен находиться в likedPosts.
+		if (userStore.user) {
+			await userStore.fetchUserActivity()
+		}
+	} catch (error) {
+		console.error('Error toggling dislike:', error)
+	}
 }
 </script>
 

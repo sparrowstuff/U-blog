@@ -158,7 +158,7 @@ const submitForm = async () => {
 		await postsStore.addPost({
 			title: postTitle.value,
 			description: postDescription.value,
-			userId: userStore.user.id,
+			// userId: userStore.user.id,
 		})
 		;((postTitle.value = ''), (postDescription.value = ''))
 
@@ -185,9 +185,9 @@ const submitForm = async () => {
 	overflow: hidden;
 	min-height: 18.75rem;
 	position: relative;
-	opacity: 0;
+	// opacity: 0;
 
-	animation: formAppearance 3s ease-in-out 0.2s forwards;
+	// animation: formAppearance 3s ease-in-out 0.2s forwards;
 
 	&::before {
 		content: '';
@@ -228,6 +228,10 @@ const submitForm = async () => {
 		font-size: $px-24;
 		line-height: 100%;
 		color: $black;
+
+		@media (max-width: 48rem) {
+			font-size: $px-20;
+		}
 	}
 
 	&__submit-btn {

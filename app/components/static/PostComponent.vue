@@ -13,8 +13,6 @@
 					/>
 					<div class="post-card__user-info">
 						<h3 class="post-card__user-name">{{ post.user?.name }}</h3>
-						<!-- <span class="post-card__divide">|</span> -->
-						<!-- <p class="post-card__user-email">{{ post.user?.email }}</p> -->
 					</div>
 				</div>
 				<span class="post-card__created-at">{{ dateFormatted }}</span>
@@ -42,67 +40,101 @@
 			</span>
 
 			<div class="post-card__commentary-block">
-				<div
-					v-if="!showCommentsImmediately && !isCommenting"
-					class="post-card__btn-block"
-				>
-					<button
-						class="post-card__add-comment-btn btn btn--transparent"
-						type="button"
-						@click="openCommentForm"
-					>
-						Добавить комментарий
-					</button>
-
-					<button
-						class="post-card__show-comments-btn btn btn--transparent"
-						type="button"
-						aria-label="Смотреть комментарии поста"
-						@click="showComments"
-					>
-						{{
-							isShowingComments
-								? 'Скрыть комментарии'
-								: 'Посмотреть комментарии'
-						}}
-					</button>
-				</div>
-
-				<CommentForm
-					v-else-if="!showCommentsImmediately"
-					:post-id="post.id"
-					@cancel-texting="isCommenting = false"
-				/>
-
-				<div
-					v-if="showCommentsImmediately || isShowingComments"
-					class="post-card__comments"
-				>
-					<CommentComponent
-						v-for="comment in postComments"
-						:key="comment.id"
-						:comment="comment"
+				<Transition name="comment-form-slide-fade" mode="out-in">
+					<CommentForm
+						v-if="isCommenting"
+						key="comment-form"
+						:post-id="post.id"
+						@cancel-texting="isCommenting = false"
 					/>
 
-					<span v-if="postComments.length === 0" class="post-card__no-comments">
-						Пока что нет комментариев
-					</span>
-				</div>
+					<div v-else key="comment-buttons" class="post-card__btn-block">
+						<button
+							v-if="userStore.isAuthenticated"
+							class="post-card__add-comment-btn btn btn--transparent"
+							type="button"
+							aria-label="Написать комментарий"
+							@click="openCommentForm"
+						>
+							Написать комментарий
+						</button>
+
+						<div class="post-card__comment-btn-wrapper">
+							<button
+								v-if="!showCommentsImmediately"
+								class="post-card__show-comments-btn btn btn--comment"
+								type="button"
+								:aria-label="
+									isShowingComments
+										? 'Скрыть комментарии поста'
+										: 'Показать комментарии поста'
+								"
+								@click="showComments"
+							>
+								<svg
+									class="post-card__show-comments-icon"
+									:class="{
+										'post-card__show-comments-icon--active': isShowingComments,
+									}"
+									xmlns="http://www.w3.org/2000/svg"
+									width="30"
+									height="30"
+									fill="transparent"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<path
+										stroke="currentColor"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="1"
+										d="M12 21a9 9 0 1 0-9-9c0 1.488.36 2.891 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1"
+									/>
+								</svg>
+							</button>
+							<HandWrittenTooltip
+								class="tooltip"
+								:text="'Открыть комментарии'"
+							/>
+						</div>
+					</div>
+				</Transition>
+
+				<Transition name="comments-slide-fade">
+					<div
+						v-if="showCommentsImmediately || isShowingComments"
+						class="post-card__comments"
+					>
+						<CommentComponent
+							v-for="comment in postComments"
+							:key="comment.id"
+							:comment="comment"
+						/>
+
+						<span
+							v-if="postComments.length === 0"
+							class="post-card__no-comments"
+						>
+							Пока что нет комментариев
+						</span>
+					</div>
+				</Transition>
 
 				<div class="post-card__bottom-menu">
 					<button
-						v-if="userStore.user?.id === post?.user?.id"
+						v-if="userStore.user?.id === post.user.id"
 						class="post-card__delete-btn btn btn--transparent"
-						aria-label="Удалить пост"
 						type="button"
+						aria-label="Удалить пост"
 						@click="deleteCurrentPost"
 					>
 						Удалить пост?
 					</button>
+
 					<LikesMenu
 						:post-id="post.id"
-						:likes-count="post.likesCount"
-						:dislikes-count="post.dislikesCount"
+						:likes-count="post.likesCount ?? 0"
+						:dislikes-count="post.dislikesCount ?? 0"
 						:user-reaction="post.userReaction"
 					/>
 				</div>
@@ -117,6 +149,7 @@ import { useRoute } from 'vue-router'
 import CommentForm from './CommentForm.vue'
 import CommentComponent from './CommentComponent.vue'
 import LikesMenu from './LikesMenu.vue'
+import HandWrittenTooltip from './HandWrittenTooltip.vue'
 import { useCommentsStore } from '~/stores/commentsStore.js'
 import { usePostsStore } from '~/stores/postsStore.js'
 import { useUserStore } from '~/stores/userStore.js'
@@ -324,13 +357,24 @@ onMounted(async () => {
 	&__post-title,
 	&__post-description {
 		color: $white;
-		font-weight: 400;
+
 		line-height: 110%;
 		color: var(--text);
 	}
 
 	&__post-title {
+		font-size: $px-20;
+		font-weight: 200;
+
+		@media (max-width: 48rem) {
+			font-size: $px-16;
+		}
+	}
+
+	&__post-description {
 		font-size: $px-24;
+		font-style: oblique;
+		font-weight: 400;
 
 		@media (max-width: 48rem) {
 			font-size: $px-20;
@@ -372,6 +416,31 @@ onMounted(async () => {
 		}
 	}
 
+	&__comment-btn-wrapper {
+		position: relative;
+
+		&:hover,
+		&:focus-visible {
+			> .tooltip {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+
+	&__show-comments-icon {
+		transition: fill $transition-300;
+	}
+
+	&__show-comments-btn {
+		&:hover,
+		&:focus-visible {
+			& svg {
+				fill: var(--accent);
+			}
+		}
+	}
+
 	&__comments {
 		display: flex;
 		flex-direction: column;
@@ -407,5 +476,38 @@ onMounted(async () => {
 			font-size: $px-14;
 		}
 	}
+
+	.comments-slide-fade-enter-active {
+		transition: all 0.8s cubic-bezier(1, 1, 0.8, 1);
+	}
+
+	.comments-slide-fade-leave-active {
+		transition: all 0.3s ease-out;
+	}
+
+	.comments-slide-fade-enter-from,
+	.comments-slide-fade-leave-to {
+		transform: translateY(-1rem);
+		opacity: 0;
+	}
+
+	.comment-form-slide-fade-enter-active,
+	.comment-form-slide-fade-leave-active {
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease;
+	}
+
+	.comment-form-slide-fade-enter-from,
+	.comment-form-slide-fade-leave-to {
+		opacity: 0;
+		transform: translateY(1rem);
+	}
+}
+
+.tooltip {
+	position: absolute;
+	bottom: -1.6rem;
+	left: -50%;
 }
 </style>

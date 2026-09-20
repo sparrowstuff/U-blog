@@ -1,5 +1,6 @@
 import prisma from '~/server/utils/database'
-import { getCookie, getRouterParam, createError } from 'h3'
+import { getRouterParam, createError } from 'h3'
+import { getOptionalUserId } from '~/server/utils/auth'
 
 type ReactionType = 'like' | 'dislike' | null
 
@@ -10,8 +11,8 @@ export default defineEventHandler(async event => {
 		throw createError({ statusCode: 400, statusMessage: 'Invalid post id' })
 	}
 
-	const userIdCookie = getCookie(event, 'userId')
-	const currentUserId = userIdCookie ? Number(userIdCookie) : null
+	// const userIdCookie = getCookie(event, 'userId')
+	const currentUserId = await getOptionalUserId(event)
 
 	const post = await prisma.post.findUnique({
 		where: { id },
