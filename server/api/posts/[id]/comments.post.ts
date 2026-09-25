@@ -21,13 +21,6 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	if (!postId || Number.isNaN(postId)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid post id',
-		})
-	}
-
 	const body = await readBody(event)
 	const parsed = commentSchema.safeParse(body)
 
@@ -38,24 +31,10 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	// const body = await readBody<{
-	// 	content?: string
-	// }>(event)
-
-	// const content = body.content?.trim()
-	// const userId = Number(body.userId)
-
 	const post = await prisma.post.findUnique({
 		where: { id: postId },
 		select: { id: true },
 	})
-
-	if (!userId || Number.isNaN(userId)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid user id',
-		})
-	}
 
 	if (!post) {
 		throw createError({

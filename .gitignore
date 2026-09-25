@@ -26,3 +26,6 @@ logs
 !.env.example
 
 /app/generated/prisma
+audit-output/stage-0-all-api-routes.txt
+audit-output/stage-0-auth-and-schema.txt
+PROJECT_AUDIT_HANDOFF.md
