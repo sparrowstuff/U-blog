@@ -1,51 +1,41 @@
 import prisma from '~/server/utils/database'
-// import { getCookie } from 'h3'
 import { requireUserId } from '~/server/utils/auth'
 import { z } from 'zod'
 
-const updateUserSchema = z.object({
-	name: z.string().min(2, 'Имя должно быть минимум 2 символа').optional(),
-	surName: z
-		.string()
-		.min(2, 'Фамилия должна быть не короче 2 символов')
-		.optional(),
-})
+const updateUserSchema = z
+	.object({
+		name: z
+			.string()
+			.trim()
+			.min(2, 'Имя должно быть минимум 2 символа')
+			.optional(),
+
+		surName: z
+			.string()
+			.trim()
+			.min(2, 'Фамилия должна быть не короче 2 символов')
+			.optional(),
+	})
+	.refine(data => data.name !== undefined || data.surName !== undefined, {
+		message: 'Необходимо передать хотя бы одно поле для обновления',
+	})
 
 export default defineEventHandler(async event => {
 	const paramId = Number(getRouterParam(event, 'id'))
-	const cookieUserId = await requireUserId(event)
 
-	if (cookieUserId !== paramId) {
-		throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
-	}
-
-	if (!paramId || Number.isNaN(paramId)) {
-		throw createError({ statusCode: 400, statusMessage: 'Invalid user id' })
-	}
-
-	if (!cookieUserId || Number.isNaN(cookieUserId)) {
+	if (!Number.isInteger(paramId) || paramId <= 0) {
 		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
+			statusCode: 400,
+			statusMessage: 'Invalid user id',
 		})
 	}
 
-	if (cookieUserId !== paramId) {
+	const currentUserId = await requireUserId(event)
+
+	if (currentUserId !== paramId) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'Forbidden',
-		})
-	}
-
-	const user = await prisma.user.findUnique({
-		where: { id: paramId },
-		select: { id: true },
-	})
-
-	if (!user) {
-		throw createError({
-			statusCode: 404,
-			statusMessage: 'user not found',
 		})
 	}
 
@@ -67,17 +57,21 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const existingUser = await prisma.user.findUnique({
-		where: { id: paramId },
-		select: { name: true, surName: true },
+	const user = await prisma.user.findUnique({
+		where: { id: currentUserId },
+		select: { id: true },
 	})
 
+	if (!user) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: 'User not found',
+		})
+	}
+
 	const updatedUser = await prisma.user.update({
-		where: { id: paramId },
-		data: {
-			name: parsed.data.name ?? existingUser?.name,
-			surName: parsed.data.surName ?? existingUser?.surName,
-		},
+		where: { id: currentUserId },
+		data: parsed.data,
 		select: {
 			id: true,
 			name: true,

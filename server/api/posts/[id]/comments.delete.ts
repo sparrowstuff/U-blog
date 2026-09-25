@@ -12,7 +12,7 @@ export default defineEventHandler(async event => {
 	if (!Number.isInteger(postId) || postId <= 0) {
 		throw createError({
 			statusCode: 400,
-			statusMessage: 'invalid post id',
+			statusMessage: 'Invalid post id',
 		})
 	}
 
@@ -20,15 +20,6 @@ export default defineEventHandler(async event => {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Invalid comment id',
-		})
-	}
-
-	const userIdCookie = userId
-
-	if (!userIdCookie) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
 		})
 	}
 

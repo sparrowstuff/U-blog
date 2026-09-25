@@ -1,5 +1,4 @@
 import prisma from '~/server/utils/database'
-import { getCookie } from 'h3'
 import { requireUserId } from '~/server/utils/auth'
 import { ReactionType } from '@/types/Reaction'
 
@@ -9,7 +8,7 @@ export default defineEventHandler(async event => {
 	const body = await readBody<{ type: ReactionType }>(event)
 	const type = body.type
 
-	if (!postId || Number.isNaN(postId)) {
+	if (!Number.isInteger(postId) || postId <= 0) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Invalid post id',
@@ -20,24 +19,6 @@ export default defineEventHandler(async event => {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Invalid reaction type',
-		})
-	}
-
-	const userIdCookie = userId || Number(getCookie(event, 'userId'))
-
-	if (!userIdCookie) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
-		})
-	}
-
-	const currentUserId = Number(userIdCookie)
-
-	if (!currentUserId || Number.isNaN(currentUserId)) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'Unauthorized',
 		})
 	}
 
@@ -59,7 +40,7 @@ export default defineEventHandler(async event => {
 				where: {
 					postId_userId: {
 						postId,
-						userId: currentUserId,
+						userId: userId,
 					},
 				},
 			}),
@@ -67,7 +48,7 @@ export default defineEventHandler(async event => {
 				where: {
 					postId_userId: {
 						postId,
-						userId: currentUserId,
+						userId: userId,
 					},
 				},
 			}),
@@ -79,7 +60,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				})
@@ -90,7 +71,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				})
@@ -98,7 +79,7 @@ export default defineEventHandler(async event => {
 				await tx.postLike.create({
 					data: {
 						postId,
-						userId: currentUserId,
+						userId: userId,
 					},
 				})
 			}
@@ -110,7 +91,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				})
@@ -121,7 +102,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				})
@@ -129,7 +110,7 @@ export default defineEventHandler(async event => {
 				await tx.postDislike.create({
 					data: {
 						postId,
-						userId: currentUserId,
+						userId: userId,
 					},
 				})
 			}
@@ -143,7 +124,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				}),
@@ -151,7 +132,7 @@ export default defineEventHandler(async event => {
 					where: {
 						postId_userId: {
 							postId,
-							userId: currentUserId,
+							userId: userId,
 						},
 					},
 				}),
