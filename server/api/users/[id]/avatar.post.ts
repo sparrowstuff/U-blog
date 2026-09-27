@@ -1,6 +1,10 @@
 import prisma from '~/server/utils/database'
 import { requireUserId } from '~/server/utils/auth'
-
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
 import { readMultipartFormData, getRouterParam, createError } from 'h3'
 import { mkdir, unlink, writeFile } from 'node:fs/promises'
 import { join, basename } from 'node:path'
@@ -12,9 +16,13 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 mb
 const MAX_INPUT_PIXELS = 25_000_000
 const AVATAR_SIZE = 512
 
+const AVATAR_IP_LIMIT = 10
+const AVATAR_USER_LIMIT = 5
+const AVATAR_WINDOW_MS = 60 * 60 * 1000
+
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
-const ALLOWED_IMAGE_FORMATS = new Set(['jpeg', 'png', 'webp', 'HEIC'])
+const ALLOWED_IMAGE_FORMATS = new Set(['jpeg', 'png', 'webp'])
 
 const getUploadsDirectory = () => {
 	return join(process.cwd(), 'public', 'uploads')
@@ -55,6 +63,14 @@ const removeFileSafely = async (filePath: string | null) => {
 }
 
 export default defineEventHandler(async event => {
+	const clientIp = getClientIp(event)
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('avatar', 'ip', clientIp),
+		limit: AVATAR_IP_LIMIT,
+		windowMs: AVATAR_WINDOW_MS,
+	})
+
 	const userId = await requireUserId(event)
 	const paramId = Number(getRouterParam(event, 'id'))
 
@@ -71,6 +87,12 @@ export default defineEventHandler(async event => {
 			statusMessage: 'Forbidden',
 		})
 	}
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('avatar', 'ip', userId),
+		limit: AVATAR_USER_LIMIT,
+		windowMs: AVATAR_WINDOW_MS,
+	})
 
 	const user = await prisma.user.findUnique({
 		where: { id: userId },

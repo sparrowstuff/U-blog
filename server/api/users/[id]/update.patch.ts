@@ -1,5 +1,10 @@
 import prisma from '~/server/utils/database'
 import { requireUserId } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
 import { z } from 'zod'
 
 const updateUserSchema = z

@@ -1,5 +1,10 @@
 import prisma from '~/server/utils/database'
 import { requireUserId } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
 import { z } from 'zod'
 
 const commentSchema = z.object({
@@ -10,7 +15,22 @@ const commentSchema = z.object({
 		.max(2000, 'Comment content must be at most 2000 characters'),
 })
 
+const COMMENT_IP_LIMIT = 120
+const COMMENT_USER_LIMIT = 30
+const COMMENT_USER_POST_LIMIT = 5
+
+const COMMENT_WINDOW_MS = 60 * 60 * 1000
+const COMMENT_POST_WINDOW_MS = 10 * 60 * 1000
+
 export default defineEventHandler(async event => {
+	const clientIp = getClientIp(event)
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('comment', 'ip', clientIp),
+		limit: COMMENT_IP_LIMIT,
+		windowMs: COMMENT_WINDOW_MS,
+	})
+
 	const userId = await requireUserId(event)
 	const postId = Number(getRouterParam(event, 'id'))
 
@@ -54,6 +74,18 @@ export default defineEventHandler(async event => {
 			statusMessage: 'User not found',
 		})
 	}
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('comment', 'user', userId),
+		limit: COMMENT_USER_LIMIT,
+		windowMs: COMMENT_WINDOW_MS,
+	})
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('comment', 'user-post', userId, postId),
+		limit: COMMENT_USER_POST_LIMIT,
+		windowMs: COMMENT_POST_WINDOW_MS,
+	})
 
 	return prisma.comment.create({
 		data: {

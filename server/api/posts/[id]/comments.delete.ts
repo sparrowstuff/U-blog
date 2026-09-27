@@ -1,7 +1,24 @@
 import prisma from '~/server/utils/database'
 import { requireUserId } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
+
+const COMMENT_DELETE_IP_LIMIT = 120
+const COMMENT_DELETE_USER_LIMIT = 30
+const COMMENT_DELETE_WINDOW_MS = 60 * 60 * 1000
 
 export default defineEventHandler(async event => {
+	const clientIp = getClientIp(event)
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('comment-delete', 'ip', clientIp),
+		limit: COMMENT_DELETE_IP_LIMIT,
+		windowMs: COMMENT_DELETE_WINDOW_MS,
+	})
+
 	const userId = await requireUserId(event)
 	const postId = Number(getRouterParam(event, 'id'))
 
@@ -45,6 +62,12 @@ export default defineEventHandler(async event => {
 			statusMessage: 'You can delete only your own comment',
 		})
 	}
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('comment-delete', 'user', userId),
+		limit: COMMENT_DELETE_USER_LIMIT,
+		windowMs: COMMENT_DELETE_WINDOW_MS,
+	})
 
 	await prisma.comment.delete({
 		where: { id: commentId },

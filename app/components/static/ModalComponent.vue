@@ -19,7 +19,7 @@
 							Х
 						</button>
 						<span class="modal__title">{{
-							isRegistrationMode ? 'Вход в аккаунт' : 'Регистрация'
+							isRegistrationMode ? 'Регистрация' : 'Вход в аккаунт'
 						}}</span>
 						<div class="modal__main-wrapper" v-if="!userStore.isAuthenticated">
 							<div class="modal__registration-block" v-if="isRegistrationMode">
@@ -358,7 +358,7 @@
 								@click="changeMode"
 							>
 								{{
-									isRegistrationMode ? 'У меня есть пароль' : 'Создать профиль'
+									isRegistrationMode ? 'У меня есть аккаунт' : 'Создать профиль'
 								}}
 							</button>
 							<button
@@ -374,13 +374,13 @@
 											: 'Войти в аккаунт'
 								}}
 							</button>
-							<span class="modal__global-error" v-if="errors">{{
+							<span class="modal__global-error" v-if="errors" role="alert">{{
 								formErrorMessage
 							}}</span>
 						</div>
 						<div class="modal__auth-complete" v-else>
 							<span class="modal__success"
-								>Вы уже авторизованы как
+								><span class="modal__auth-title">Вы уже авторизованы как</span>
 								<b class="modal__success-name">{{
 									userStore.user?.name
 								}}</b></span
@@ -574,6 +574,17 @@ const submitForm = async () => {
 		modalStore.closeModal()
 	} catch (error: any) {
 		const data = error?.data
+		const statusCode = error?.statusCode ?? error?.response?.status
+
+		if (statusCode === 429) {
+			const retryAfterSeconds = Number(data?.retryAfterSeconds)
+
+			errors.value.form = Number.isFinite(retryAfterSeconds)
+				? `Слишком много попыток. Повторите через ${retryAfterSeconds} сек.`
+				: 'Слишком много попыток. Повторите позже.'
+
+			return
+		}
 
 		if (data?.fieldErrors) {
 			errors.value.email = data.fieldErrors.email || ''
@@ -581,11 +592,17 @@ const submitForm = async () => {
 			errors.value.name = data.fieldErrors.name || ''
 			errors.value.surname = data.fieldErrors.surname || ''
 			errors.value.confirmPassword = data.fieldErrors.confirmPassword || ''
-			errors.value.form = data.fieldErrors.form || data.statusMessage || ''
-		} else {
 			errors.value.form =
-				data?.statusMessage || data?.message || 'Ошибка авторизации'
+				data.fieldErrors.form || error?.statusMessage || 'Ошибка авторизации'
+
+			return
 		}
+
+		errors.value.form =
+			error?.statusMessage ||
+			data?.statusMessage ||
+			data?.message ||
+			'Ошибка авторизации'
 	} finally {
 		isSubmitting.value = false
 		showPassword.value = false
@@ -706,10 +723,18 @@ onMounted(() => {
 	&__success {
 		font-size: $px-20;
 		color: var(--success);
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	&__auth-title {
+		text-align: center;
 	}
 
 	&__success-name {
 		color: var(--text);
+		text-align: center;
 	}
 
 	&--active {
