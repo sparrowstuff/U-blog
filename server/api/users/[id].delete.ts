@@ -1,10 +1,25 @@
 import prisma from '~/server/utils/database'
-// import { deleteCookie, getCookie } from 'h3'
 import { clearAuthCookie, requireUserId } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
+
+const ACCOUNT_DELETE_IP_LIMIT = 10
+const ACCOUNT_DELETE_USER_LIMIT = 3
+const ACCOUNT_DELETE_WINDOW_MS = 24 * 60 * 60 * 1000
 
 export default defineEventHandler(async event => {
+	const clientIp = getClientIp(event)
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('account-delete', 'ip', clientIp),
+		limit: ACCOUNT_DELETE_IP_LIMIT,
+		windowMs: ACCOUNT_DELETE_WINDOW_MS,
+	})
+
 	const paramId = Number(getRouterParam(event, 'id'))
-	const currentUserId = await requireUserId(event)
 
 	if (!Number.isInteger(paramId) || paramId <= 0) {
 		throw createError({
@@ -13,19 +28,7 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	if (!paramId || Number.isNaN(paramId)) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'Invalid user id',
-		})
-	}
-
-	// if (!cookieUserId || Number.isNaN(cookieUserId)) {
-	// 	throw createError({
-	// 		statusCode: 401,
-	// 		statusMessage: 'Unauthorized',
-	// 	})
-	// }
+	const currentUserId = await requireUserId(event)
 
 	if (currentUserId !== paramId) {
 		throw createError({
@@ -34,62 +37,28 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	const user = await prisma.user.findUnique({
-		where: { id: paramId },
-		select: { id: true },
+	enforceRateLimit(event, {
+		key: createRateLimitKey('account-delete', 'user', currentUserId),
+		limit: ACCOUNT_DELETE_USER_LIMIT,
+		windowMs: ACCOUNT_DELETE_WINDOW_MS,
 	})
 
-	if (!user) {
+	const deleted = await prisma.user.deleteMany({
+		where: {
+			id: currentUserId,
+		},
+	})
+
+	if (deleted.count === 0) {
 		throw createError({
 			statusCode: 404,
 			statusMessage: 'User not found',
 		})
 	}
 
-	const postIds = await prisma.post.findMany({
-		where: { userId: paramId },
-		select: { id: true },
-	})
-
-	const ids = postIds.map(post => post.id)
-
-	await prisma.$transaction(async tx => {
-		if (ids.length > 0) {
-			await tx.comment.deleteMany({
-				where: { postId: { in: ids } },
-			})
-
-			await tx.postLike.deleteMany({
-				where: { postId: { in: ids } },
-			})
-
-			await tx.postDislike.deleteMany({
-				where: { postId: { in: ids } },
-			})
-
-			await tx.post.deleteMany({
-				where: { userId: paramId },
-			})
-		}
-
-		await tx.comment.deleteMany({
-			where: { userId: paramId },
-		})
-
-		await tx.postLike.deleteMany({
-			where: { userId: paramId },
-		})
-
-		await tx.postDislike.deleteMany({
-			where: { userId: paramId },
-		})
-
-		await tx.user.delete({
-			where: { id: paramId },
-		})
-	})
-
 	await clearAuthCookie(event)
 
-	return { success: true }
+	return {
+		success: true,
+	}
 })

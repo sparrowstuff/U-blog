@@ -16,6 +16,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		databaseUrl: '',
 		authCookieSecret: '',
+		trustProxy: false,
 	},
 
 	vite: {

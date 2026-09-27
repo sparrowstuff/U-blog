@@ -1,9 +1,29 @@
 import prisma from '~/server/utils/database'
 import { getCookie } from 'h3'
 import { requireUserId } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
 import { ReactionType } from '@/types/Reaction'
 
+const REACTION_IP_LIMIT = 240
+const REACTION_USER_LIMIT = 120
+const REACTION_USER_POST_LIMIT = 20
+
+const REACTION_WINDOW_MS = 60 * 60 * 1000
+const REACTION_POST_WINDOW_MS = 60 * 1000
+
 export default defineEventHandler(async event => {
+	const clientIp = getClientIp(event)
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('reaction', 'ip', clientIp),
+		limit: REACTION_IP_LIMIT,
+		windowMs: REACTION_POST_WINDOW_MS,
+	})
+
 	const userId = await requireUserId(event)
 	const postId = Number(getRouterParam(event, 'id'))
 	const body = await readBody<{ type: ReactionType }>(event)
@@ -52,6 +72,18 @@ export default defineEventHandler(async event => {
 			statusMessage: 'Post not found',
 		})
 	}
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('reaction', 'user', userId),
+		limit: REACTION_USER_LIMIT,
+		windowMs: REACTION_WINDOW_MS,
+	})
+
+	enforceRateLimit(event, {
+		key: createRateLimitKey('reaction', 'user-post', userId, postId),
+		limit: REACTION_USER_POST_LIMIT,
+		windowMs: REACTION_POST_WINDOW_MS,
+	})
 
 	const result = await prisma.$transaction(async tx => {
 		const [like, dislike] = await Promise.all([

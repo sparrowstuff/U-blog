@@ -1,17 +1,36 @@
 import prisma from '~/server/utils/database'
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
-// import { setCookie } from 'h3'
 import { setAuthCookie } from '~/server/utils/auth'
+import {
+	createRateLimitKey,
+	enforceRateLimit,
+	getClientIp,
+} from '~/server/utils/rate-limiter'
+
+const LOGIN_IP_LIMIT = 20
+const LOGIN_EMAIL_IP_LIMIT = 8
+const LOGIN_WINDOW_MS = 15 * 60 * 1000
+
+const DUMMY_PASSWORD_HASH =
+	'$2b$10$Jj0I9j4NVs0SBv5EWDYZL.3x0zvSkNKN3Pd5M8tSKn4USywnLzOEy'
 
 const loginSchema = z.object({
-	email: z.string().email('Некорректный email'),
+	email: z.string().trim().toLowerCase().email('Некорректный email'),
+
 	password: z.string().min(6, 'Пароль минимум 6 символов'),
 })
 
 export default defineEventHandler(async event => {
-	const body = await readBody(event)
+	const clientIp = getClientIp(event)
 
+	enforceRateLimit(event, {
+		key: createRateLimitKey('login', 'ip', clientIp),
+		limit: LOGIN_IP_LIMIT,
+		windowMs: LOGIN_WINDOW_MS,
+	})
+
+	const body = await readBody(event)
 	const parsed = loginSchema.safeParse(body)
 
 	if (!parsed.success) {
@@ -31,42 +50,33 @@ export default defineEventHandler(async event => {
 
 	const data = parsed.data
 
-	const user = await prisma.user.findUnique({
-		where: { email: data.email },
+	enforceRateLimit(event, {
+		key: createRateLimitKey('login', 'ip-email', clientIp, data.email),
+		limit: LOGIN_EMAIL_IP_LIMIT,
+		windowMs: LOGIN_WINDOW_MS,
 	})
 
-	if (!user) {
-		throw createError({
-			statusCode: 404,
-			statusMessage: 'Validation error',
-			data: {
-				fieldErrors: {
-					email: 'Пользователь не найден',
-				},
-			},
-		})
-	}
+	const user = await prisma.user.findUnique({
+		where: {
+			email: data.email,
+		},
+	})
 
-	const isValid = await bcrypt.compare(data.password, user.password)
+	const passwordHash = user?.password ?? DUMMY_PASSWORD_HASH
 
-	if (!isValid) {
+	const isValidPassword = await bcrypt.compare(data.password, passwordHash)
+
+	if (!user || !isValidPassword) {
 		throw createError({
 			statusCode: 401,
-			statusMessage: 'Validation error',
+			statusMessage: 'Invalid credentials',
 			data: {
 				fieldErrors: {
-					password: 'Неверный пароль',
+					form: 'Неверный email или пароль',
 				},
 			},
 		})
 	}
-
-	// setCookie(event, 'userId', String(user.id), {
-	// 	httpOnly: true,
-	// 	sameSite: 'lax',
-	// 	path: '/',
-	// 	maxAge: 60 * 60 * 24 * 3,
-	// })
 
 	await setAuthCookie(event, user.id)
 
