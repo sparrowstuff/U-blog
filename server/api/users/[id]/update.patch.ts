@@ -25,19 +25,7 @@ const updateUserSchema = z
 		message: 'Необходимо передать хотя бы одно поле для обновления',
 	})
 
-const PROFILE_UPDATE_IP_LIMIT = 60
-const PROFILE_UPDATE_USER_LIMIT = 20
-const PROFILE_UPDATE_WINDOW_MS = 60 * 60 * 1000
-
 export default defineEventHandler(async event => {
-	const clientIp = getClientIp(event)
-
-	enforceRateLimit(event, {
-		key: createRateLimitKey('profile-update', 'ip', clientIp),
-		limit: PROFILE_UPDATE_IP_LIMIT,
-		windowMs: PROFILE_UPDATE_WINDOW_MS,
-	})
-
 	const paramId = Number(getRouterParam(event, 'id'))
 
 	if (!Number.isInteger(paramId) || paramId <= 0) {
@@ -75,12 +63,8 @@ export default defineEventHandler(async event => {
 	}
 
 	const user = await prisma.user.findUnique({
-		where: {
-			id: currentUserId,
-		},
-		select: {
-			id: true,
-		},
+		where: { id: currentUserId },
+		select: { id: true },
 	})
 
 	if (!user) {
@@ -90,16 +74,8 @@ export default defineEventHandler(async event => {
 		})
 	}
 
-	enforceRateLimit(event, {
-		key: createRateLimitKey('profile-update', 'user', currentUserId),
-		limit: PROFILE_UPDATE_USER_LIMIT,
-		windowMs: PROFILE_UPDATE_WINDOW_MS,
-	})
-
 	const updatedUser = await prisma.user.update({
-		where: {
-			id: currentUserId,
-		},
+		where: { id: currentUserId },
 		data: parsed.data,
 		select: {
 			id: true,
